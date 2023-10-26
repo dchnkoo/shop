@@ -11,21 +11,14 @@
     {% block titlepage %}
         <title>Інтернет-магазин спортивних товарів</title>
     {% endblock %}
-    {% block style %}
-        <link rel="icon" type="png" href="static/logo/brocivky_logo.png">
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    {% endblock %}
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@700&family=Oswald:wght@700&display=swap" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400&display=swap" rel="stylesheet">
+    {% include 'styles.html' %}
 </head>
 <body>
     {% include 'header.html' %}
 
     {% include 'show_order_block.html' %}
+
+    {% include 'bckt.html' %}
 
     <div class="backt-order-container">
         

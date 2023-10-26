@@ -219,6 +219,10 @@ $(document).ready(function() {
                     'border-color' : '#33333326',
                     'color' : '#3333337a'
                 }).removeClass('active-size')
+                if (document.querySelector('.invalid-size')) {
+
+                    document.querySelector('.invalid-size').style.display = 'none';
+                }
         
         
                 $(this).css({
@@ -238,6 +242,7 @@ $(document).ready(function() {
     }
 
     $('.product-size').click(function(e) {
+
         $('.product-size').css({
             'border-color' : '#33333326',
             'color' : '#3333337a'
@@ -356,6 +361,50 @@ $(document).ready(function() {
        })
        .then(status => console.log(status))
        .catch(err => console.log(err))
+    })
+
+
+    $('.btn-container .go-form-btn-order').click((e) => {
+        $('.btn-container').css('display', 'none');
+
+        $('.products-bckt .form-order').css('display', 'block');
+    })
+
+    $('#order-bckt-crosser').click(e => {
+        reblur()
+
+        $('.products-bckt-container').css('display', 'none');
+        $('.products-bckt .form-order').css('display', 'none');
+        $('.btn-container').css('display', 'block');
+
+    })
+
+    $('.header-nav-backet_btn').click(() => {
+        blur()
+
+        $('.products-bckt-container').fadeIn();
+
+    })
+
+
+    $('.bkt-btn').click(() => {
+        
+        if (document.querySelector('.active-size')) {
+            Product.orderSize = document.querySelector('.active-size').innerHTML;
+            console.log(Product)
+            
+            if (Product.WithoutDiscount !== null) {
+                $('.bckt-orders').append(`<div class="order"><div class="bckt-img-container"><img src="${Product.image}"></div><div class="bckt-name_price"><div class="container"><p class="order-name">${Product.name} - ${Product.orderSize}</p><p class="order-price">${Product.price}</p></div><div class="btn-del"><button id="del">Прибрати з корзини</button></div></div><span class="prodcutId-bckt noactive">${Product.id}</span></div>`)
+            } else {
+                $('.bckt-orders').append(`<div class="order"><div class="bckt-img-container"><img src="${Product.image}"></div><div class="bckt-name_price"><div class="container"><p class="order-name">${Product.name} - ${Product.orderSize}</p><p class="order-price">${Product.price}</p></div><div class="btn-del"><button id="del">Прибрати з корзини</button></div></div><span class="prodcutId-bckt noactive">${Product.id}</span></div>`)
+            }
+
+
+        } else if (!document.querySelector('.invalid-size')) {
+            $('.order-templates-container').append('<span class="invalid-size">Для додавання товару в корзину оберіть розмір</span>');
+        } else {
+            document.querySelector('.invalid-size').style.display = 'block';
+        }
     })
   
 });

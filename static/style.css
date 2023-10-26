@@ -999,6 +999,26 @@ aside.filter-panel-container {
     font-weight: bolder;
 }
 
+.order-templates-container {
+    text-align: start;
+}
+
+.invalid-size {
+    width: 100%;
+    color: #ff0000;
+    font-weight: bold;
+    position: relative;
+}
+
+.invalid-size::before {
+    content: '*';
+
+    position: absolute;
+    color: #ff0000;
+    top: -0.2rem;
+    left: -0.4rem;
+}
+
 .userName input,
 .userSecondName input,
 .userPhone input,

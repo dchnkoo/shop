@@ -7,20 +7,13 @@
     <meta name="keywords" content="Придбати борцівки онлайн, купити боксерки в інтернеті, боксерки купити, спортивний одяг в інтернет магазині, спортивні костюми, взуття купити онлайн">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Знижки - BORCIVKY UKRAINE</title>
-    <link rel="icon" type="png" href="static/logo/brocivky_logo.png">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='new_product_page.css') }}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@700&family=Oswald:wght@700&display=swap" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400&display=swap" rel="stylesheet">
+    {% include 'styles.html' %}
 </head>
 <body>
     {% include 'header.html' %}
 
     {% include 'show_order_block.html' %}
+    {% include 'bckt.html' %}
 
     <div class="page-container">
         

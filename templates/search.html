@@ -44,11 +44,6 @@
 {% endif %}
 {% endblock %}
 
-{% block style %}
-<link rel="icon" type="png" href="static/logo/brocivky_logo.png">
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-{% endblock %}
-
 {% block productcards %}            
     {% if category %}
         {% for elem in search_filter %}

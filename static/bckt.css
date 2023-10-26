@@ -1,0 +1,150 @@
+.products-bckt-container {
+    position: absolute;
+    z-index: 999;
+    top: 4rem;
+
+    padding: 2rem 4rem;
+    background-color: #fff;
+    border-radius: 20px;
+
+    display: none;
+}
+
+.products-bckt .header-bckt {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.products-bckt .header-bckt > h2 {
+    font-size: clamp(1.2rem, 2vw, 2.5rem);
+    font-weight: bold;
+}
+
+.products-bckt .header-bckt > button {
+    cursor: pointer;
+    font-size: clamp(1rem, 1.2vw, 2rem);
+    background: transparent;
+    border: none;
+}
+
+.bckt-orders {
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.order {
+    margin: 1rem 0;
+
+    width: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+}
+
+.bckt-img-container img {
+    width: clamp(6rem, 10vw, 12rem);
+}
+
+.bckt-name_price {
+    padding: 0.5rem;
+
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
+
+}
+
+.bckt-name_price .container {
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.btn-del {
+    text-align: end;
+}
+
+.bckt-name_price #del {
+    font-size: clamp(0.7rem, 1vw, 1.7rem);
+    color: #919191;
+    background: transparent;
+    border-bottom: 1px solid #919191;
+    padding: 0.3rem;
+    transition: 0.3s;
+}
+
+.bckt-name_price #del:hover {
+    color: #333;
+    border-color: #333;
+}
+
+.bckt-name_price .price-bckt {
+    font-weight: bold;
+    color: #46A358;
+    font-size: clamp(0.9rem, 1.2vw, 2rem);
+}
+
+
+.bckt-name_price .name-bckt {
+    margin-bottom: 0.5rem;
+
+    font-size: clamp(0.9rem, 1.2vw, 2rem);
+    font-weight: bold;
+    color: #4B5187;
+}
+
+.btn-container {
+    margin: 1rem 0;
+}
+
+.go-form-btn-order {
+    padding: 0.3rem 0.7rem;
+    border-radius: 5px;
+    font-size: clamp(0.8rem, 1.1vw, 2rem);
+    background-color: #46A358;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.go-form-btn-order:hover {
+    transform: scale(0.9);
+}
+
+.products-bckt .form-order {
+    padding: 0 1rem;
+
+    display: none;
+    opacity: 0;
+
+    animation: go-to-form 0.3s forwards ease-in;
+}
+
+@keyframes go-to-form {
+    from {
+        opacity: 0;
+    } to {
+        opacity: 1;
+    }
+}
+
+.products-bckt .form-order h2 {
+    font-size: clamp(1.2rem, 2vw, 2.5rem);
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.products-bckt .form-order .submit-bckt {
+    padding: 0.3rem 0.7rem;
+    border-radius: 5px;
+    font-size: clamp(1rem, 1.2vw, 2rem);
+    background-color: #46A358;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.products-bckt .form-order .submit-bckt:hover {
+    transform: scale(0.9);
+}
