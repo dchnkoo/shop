@@ -1,0 +1,121 @@
+<footer>
+
+    {% if foot_category %}
+        <div class="container-for-more-ptoduct">
+            <h2>В нас також можно придбати</h2>
+        </div>
+    {% endif %}
+
+    <div class="categoty-cards-container">
+
+        {% if foot_category %}
+            {% for i in foot_category() %}
+
+                <div class="category-cards">
+                    <div class="category-cards-img">
+                        <a href="search?category={{i['category']}}&price-min={{ min() }}&price-max={{ max() }}"><img src="{{ i['photos'] }}"></a>
+                    </div>
+                    <div class="category-cards-name_btn-container">
+                    <div class="category-cards-name">
+                            <a href="search?category={{i['category']}}&price-min={{ min() }}&price-max={{ max() }}">{{ i['category'] }}</a>
+                    </div>
+                    <div class="category-cards-btn">
+                            <a href="search?category={{i['category']}}&price-min={{ min() }}&price-max={{ max() }}">Перейти <span class="f-line"></span><span class="s-line"></span></a>
+                    </div>
+                    </div>
+                </div>
+
+            {% endfor %}
+        {% else %}
+            {% for elem in foot_cards %}
+                <div class="cards-con-cont">
+                    <div id="{{ elem['id'] }}" class="card-container">
+                        <div class="card">
+                            {% if elem['discountPrice'] %}
+                                <span class="discount">-{{ elem['Знижка'] }}%</span>
+                            {% endif %}
+                            <span class="abs">
+                                <div class="card-image-container">
+                                    <div class="card-image">
+                                        {% for img in elem['photos'] %}
+                                            <img id="{{ elem['id'] }}" src="{{ img }}" alt="{{ img }}">
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="section-card">
+                                    <div class="card-name-and-buybtn">
+                                        <span id="nm-pr-con">
+                                            <a id="{{ elem['id'] }}" class="card-name">{{ elem['Бренд'] + ' ' + elem['Модель'] + ' ' + elem['Колір']}}</a>
+                                            {% if elem['discountPrice'] %}
+                                                <span class="discount-container">
+                                                    <span class="discountPrice">{{ elem['discountPrice'] }} &#8372;</span>
+                                                    <span class="card-price-without-discount">{{ elem['Ціна'] }} &#8372;</span>
+                                                </span>
+                                            {% else %}    
+                                                <span class="card-price">{{ elem['Ціна'] }} &#8372;</span>
+                                            {% endif %}
+                                        </span>
+                                        <!-- <button id="buybtn"><img src="static/icons/buybtn.png"></button> -->
+                                    </div>
+                                </div>
+                            </span>
+                            <span id="productId" class="noactive">{{ elem['id'] }}</span>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+        {% endif %}
+
+    </div>
+
+    <div id="Contacts">
+        <address>
+            <span><img src="static/icons/email_icon.png"><a href="mailto:info@borcovkiukraine.com.ua">info@borcovkiukraine.com.ua</a></span>
+            <span><img src="static/icons/Calling.png"><a href="tel:+380631144525">+38 (063) 114 45 25</a></span>
+        </address>
+    </div>
+
+    <div id="paidAndDelivery" class="dop-info">
+        <div class="help">
+            <p>Допомога</p>
+            <ul>
+                <li><a href="/infoBuyAndDelivery">Купівля & Доставка</a></li>
+                <li><a href="/infoBuyAndDelivery">Як повернути</a></li>
+            </ul>
+        </div>
+        <div class="categories">
+            <p>Категорії</p>
+            <ul>
+                <li><a href="search?category=Борцівки&price-min={{ min() }}&price-max={{ max() }}">Борцівки</a></li>
+                <li><a href="search?category=Тріко&price-min={{ min() }}&price-max={{ max() }}">Тріко</a></li>
+                <li><a href="search?category=Футболки&price-min={{ min() }}&price-max={{ max() }}">Футболки</a></li>
+                <li><a href="search?category=Шкарпетки&price-min={{ min() }}&price-max={{ max() }}">Шкарпетки</a></li>
+            </ul>
+        </div>
+        <div class="social-media_and-paids">
+            <div class="social">
+                <p>Соціальні мережі</p>
+                <div class="img-social">
+                    <span>
+                        <img src="static/icons/Facebook.png">
+                    </span>
+                    <span>
+                        <a target="_blank" href="https://www.instagram.com/borcovkiukraine/?hl=ru"><img src="static/icons/INST.png"></a>
+                    </span>
+                </div>
+            </div>
+            <div class="paids-conatiner">
+                <p id="paids-list">Ми приймаємо</p>
+                <span>
+                    <img src="static/icons/paids.png">
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="copyright">
+        <p>© Copyright (c) <span></span> BorcivkyUkraine.com.ua</p>
+    </div>
+
+</footer>

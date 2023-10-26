@@ -1,0 +1,36 @@
+main {
+    margin-top: 3rem;
+}
+
+main div {
+
+    padding: 3rem;
+    border-radius: 20px;
+}
+
+main div:hover {
+    box-shadow: 0 0 10px #3333333a;
+}
+
+
+
+h2 {
+    font-size: clamp(1.3rem ,1.7vw, 2.5rem);
+    font-weight: bolder;
+
+    margin: 1rem 0 1rem 1.5rem;
+    position: relative;
+}
+
+h2::before {
+    content: '';
+
+    height: 2vh;
+    width: 1vw;
+    position: absolute;
+    left: -1.5rem;
+    bottom: 0.5rem;
+    border-radius: 50px;
+
+    background: #46A358;
+}

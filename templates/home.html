@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="authors" content="Developer: Valerii Diachenko UI/UX: Nazarii Samchuk">
+    {% block metatags %}
+        <meta name="description" content="Інтернет магазин спортивних товарів та одягу для боксу та боротьби. Доставка по всій Україні ">
+        <meta name="keywords" content="Придбати борцівки онлайн, купити боксерки в інтернеті, боксерки купити, спортивний одяг в інтернет магазині, спортивні костюми, взуття купити онлайн">
+    {% endblock %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block titlepage %}
+        <title>Інтернет-магазин спортивних товарів</title>
+    {% endblock %}
+    {% block style %}
+        <link rel="icon" type="png" href="static/logo/brocivky_logo.png">
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    {% endblock %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@700&family=Oswald:wght@700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400&display=swap" rel="stylesheet">
+</head>
+<body>
+    {% include 'header.html' %}
+
+    {% include 'show_order_block.html' %}
+
+    <div class="backt-order-container">
+        
+    </div>
+
+    <div class="page-container">
+        
+        <main class="main">
+
+            {% include 'banner.html' %}
+
+            <div class="content-container">
+
+                {% include 'aside_filter.html' %}
+
+
+                <div class="cont-crd-pnl">
+                   
+                    {% include 'filter_section.html' %}
+
+                    <div class="product-cards-con">
+                        <div class="not-found" style="display: none;">
+                            <h1>Товари не знайдено</h1>
+                        </div>
+                        <div class="product-cards-container">
+                            {% block productcards %}
+                                {% for elem in all_products() %}
+                                    {% include 'card.html' %}
+                                {% endfor %}
+                            {% endblock %}
+                        </div>
+                        <div class="more-cards">
+                            <button>Показати ще</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        {% include 'footer.html' %}
+    </div>
+    {% include 'scroll_btn.html' %}
+    <script src="/static/js/jquery-3.7.1.min.js"></script>
+    <script src="/static/js/cards_parsing.js"></script>
+</body>
+</html>

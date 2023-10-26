@@ -1,0 +1,81 @@
+
+{% if newProductsPage %}
+    <div class="cards-con-cont">
+        <div id="{{ elem['id'] }}" class="card-container">
+            <div class="card">
+                <span class="newProductsPage">NEW</span>
+                <span class="abs">
+                    <div class="card-image-container">
+                        <div class="card-image">
+                            {% for img in elem['photos'] %}
+                                <img id="{{ elem['id'] }}" src="{{ img }}" alt="{{ img }}">
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="section-card">
+                        <div class="card-name-and-buybtn">
+                            <span id="nm-pr-con">
+                                <a id="{{ elem['id'] }}" class="card-name">{{ elem['Бренд'] + ' ' + elem['Модель'] + ' ' + elem['Колір']}}</a>
+                                <span class="card-price">{{ elem['Ціна'] }} &#8372;</span>
+                            </span>
+                            <!-- <button id="buybtn"><img src="static/icons/buybtn.png"></button> -->
+                        </div>
+                        <div id="card_btn_buy_one" class="card-btn_buy_one_click">
+                            <button id="{{ elem['id'] }}"><img id="{{ elem['id'] }}" src="static/icons/buybtn.png"></button>
+                        </div>
+                    </div>
+                </span>
+                <span id="productId" class="noactive">{{ elem['id'] }}</span>
+                {% for size in elem['Розмір'] %}
+                    {% if size != '' %}
+                        <span class="size noactive">{{ size }}</span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="cards-con-cont">
+        <div id="{{ elem['id'] }}" class="card-container">
+            <div class="card">
+                {% if elem['discountPrice'] %}
+                    <span class="discount">-{{ elem['Знижка'] }}%</span>
+                {% endif %}
+                <span class="abs">
+                    <div class="card-image-container">
+                        <div class="card-image">
+                            {% for img in elem['photos'] %}
+                                <img id="{{ elem['id'] }}" src="{{ img }}" alt="{{ img }}">
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="section-card">
+                        <div class="card-name-and-buybtn">
+                            <span id="nm-pr-con">
+                                <a id="{{ elem['id'] }}" class="card-name">{{ elem['Бренд'] + ' ' + elem['Модель'] + ' ' + elem['Колір']}}</a>
+                                {% if elem['discountPrice'] %}
+                                    <span class="discount-container">
+                                        <span class="discountPrice">{{ elem['discountPrice'] }} &#8372;</span>
+                                        <span class="card-price-without-discount">{{ elem['Ціна'] }} &#8372;</span>
+                                    </span>
+                                {% else %}    
+                                    <span class="card-price">{{ elem['Ціна'] }} &#8372;</span>
+                                {% endif %}
+                            </span>
+                            <!-- <button id="buybtn"><img src="static/icons/buybtn.png"></button> -->
+                        </div>
+                        <div id="card_btn_buy_one" class="card-btn_buy_one_click">
+                            <button id="{{ elem['id'] }}"><img id="{{ elem['id'] }}" src="static/icons/buybtn.png"></button>
+                        </div>
+                    </div>
+                </span>
+                <span id="productId" class="noactive">{{ elem['id'] }}</span>
+                {% for size in elem['Розмір'] %}
+                    {% if size != '' %}
+                        <span class="size noactive">{{ size }}</span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endif %}

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="authors" content="Developer: Valerii Diachenko UI/UX: Nazarii Samchuk">
+    <title>{{ product['Категорія'] }}: {{ product['Бренд'] }} {{ product['Модель'] }} {{ product['Колір'] }} {{ product['Ціна2'] }} &#8372; - BORCIVKY UKRAINE</title>
+    <link rel="icon" type="png" href="static/logo/brocivky_logo.png">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='product_page.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@700&family=Oswald:wght@700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="page-container">
+        {% include 'header.html' %}
+        <main>
+            <div>
+                <div class="product-page-container">
+                    <div class="product-page-images">
+                        <div class="product-page-image-container">
+                            {% for elem in product['photos'] %}
+                                <img src="{{ elem }}" alt="{{  elem  }}">
+                            {% endfor %}
+                        </div>
+                        <div class="prodcut-page-big-image">
+                            <img src="{{product['photos'][0]}}" alt="{{product['photos'][0]}}">
+                        </div>
+                    </div>
+                    <div class="product-page-info-container">
+                        <div>
+                            <div class="product-name">
+                                <span>{{ product['Бренд'] }} {{ product['Модель'] }}</span>
+                            </div>
+                            <div class="product-price">
+                                {% if product['discountPrice'] %}
+                                    <span class="price-name">Ціна</span>
+                                    <div>
+                                        <span class="withoutDiscountPrice">{{ product['Ціна'] }} &#8372;</span>
+                                        <span class="discountPriceName">{{ product['discountPrice'] }} &#8372;</span>
+                                    </div>
+                                {% else %}
+                                    <span class="price-name">Ціна</span>
+                                    <span class="staticPrice">{{ product['Ціна'] }} &#8372;</span>
+                                {% endif %}
+                            </div>
+                            <div class="product-description">
+                                <span>{{ product['Категорія'] }} {{ product['Бренд'] }}</span>
+                                <div><span class="description">{{ product['Опис'] }}</span><button class="desc-btn">...</button></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="product-sizes">
+                                <span>Розмір</span>
+                                <div>
+                                    {% for i in product['Розмір'] %}
+                                        {% if i != '' %}
+                                            <div><span class='product-size'>{{ i }}</span></div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="product-page-btns">
+                                <div class="number-btns">
+                                    <button class="plus">+</button>
+                                    <span>1</span>
+                                    <button class="minus">-</button>
+                                    <p class="product-n" style="display: none;">{{ product['Кількість'] }}</p>
+                                </div>
+                                <div class="buy_bckt-btns">
+                                    <button id="buy">КУПИТИ</button>
+                                    <button id="in-bckt">В КОШИК<span></span></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        {% include 'footer.html' %}
+    </div>
+    <script src="/static/js/jquery-3.7.1.min.js"></script>
+    <script src="/static/js/cards_parsing.js"></script>
+</body>
+</html>

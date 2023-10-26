@@ -1,0 +1,62 @@
+{% extends 'home.html' %}
+
+{% block metatags %}
+
+{% if category == 'Борцівки' %}
+    <meta name="description" content="Чоловічі та дитячі борцівки придбати онлайн. Великий вибір борцівок. ✈️ Доставка по Україні">
+    <meta name="keywords" content="онлайн, борцівки придбати в інтернеті, якісні борцівки та боксерки">
+{% elif category == 'Взуття' %}
+    <meta name="description" content="Чловіче, дитяче якісне взуття купити в інтернет магазині. ✈️ Доставка по Україні">
+    <meta name="keywords" content="спортивне взуття, взуття, кросівки, кеди, adidas, nike, asics, puma">
+{% elif category == 'Тріко' %}
+    <meta name="description" content="Якісне тріко для боротьби в інтернет магазині BORCIVKY UKRAINE. ✈️ Доставка по Україні">
+    <meta name="keywords" content="Тріко для боротьби, Трико для борьби придбати онлайн, купити тріко в інтернет магазині">
+{% elif category == 'Футболки' %}
+    <meta name="description" content="ФУТБОЛКИ для чоловіків, жінок та дітей в интернет-магазині. ✈️ Доставка по Україні. Кращі ціни.">
+    <meta name="keywords" content="Футболки для чоловіків, футболки для жінок, футболки для дітей, футболки придбати в інтернет магазині">
+{% elif category == 'Костюми' %}
+    <meta name="description" content="Жіночі, чоловічі и дитячі СПОРТИВНІ КОСТЮМИ в интернет-магазині ✈️ Доставка по Україні. Кращі ціни.">
+    <meta name="keywords" content="Спортивні костюми, спортивні костюми онлайн, спортивні костюми придбати в інтернет магазині">
+{% elif category == 'Шкарпетки' %}
+    <meta name="description" content="Жіночі, чоловічі и дитячі Шкарпетки в интернет-магазині. ✈️ Доставка по Україні. Кращі ціни.">
+    <meta name="keywords" content="Шкарпетки, придбати Шкарпетки онлайн, шкарпетки в інтернет магазині купити">
+{% elif category == 'Рюкзаки' %}
+    <meta name="description" content="Рюкзаки в интернет-магазині BORCIVKY UKRAINE. ✈️ Доставка по Україні. Кращі ціни.">
+    <meta name="keywords" content="Рюкзаки, придбати рюкзак онлайн">
+{% elif category == 'Медальниці' %}
+    <meta name="description" content="Медальниці в интернет-магазині. ✈️ Доставка по Україні. Кращі ціни.">
+    <meta name="keywords" content="Медальниці в інтернет магазині, медальниці онлайн">
+{% elif category == 'Аксесуари' %}
+    <meta name="description" content="Аксесуари в интернет-магазині. ✈️ Доставка по Україні. Кращі ціни.">
+    <meta name="keywords" content="Аксесуари, придбати Аксесуари онлайн">
+{% else %}
+    <meta name="description" content="Інтернет-магазин товарів та одягу для спорту в Україні. ✈️ Доставка по Україні">
+    <meta name="keywords" content="спортивний одяг онлайн, товари для спорту в Інтернет-магазині, якісін борцівки придбати онлайн в Інтернет-магазині">
+{% endif %}
+
+{% endblock %}
+
+{% block titlepage %}
+{% if category %}
+    <title>{{ category }} - BORCIVKY UKRAINE</title>
+{% else %}
+    <title>Каталог - BORCIVKY UKRAINE</title>
+{% endif %}
+{% endblock %}
+
+{% block style %}
+<link rel="icon" type="png" href="static/logo/brocivky_logo.png">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+{% endblock %}
+
+{% block productcards %}            
+    {% if category %}
+        {% for elem in search_filter %}
+            {% include 'card.html' %}  
+        {% endfor %}
+    {% else %}
+        {% for elem in price_search %}
+            {% include 'card.html' %}  
+        {% endfor %}
+    {% endif %}
+{% endblock %}
