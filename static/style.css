@@ -315,7 +315,7 @@ body {
     background: transparent;
 }
 
-.header-nav-backet_btn button img {
+.header-nav-backet_btn button svg {
     width: var(--FS);
 }
 
@@ -763,8 +763,8 @@ aside.filter-panel-container {
    margin:0.45rem;
 }
 
-.card-btn_buy_one_click button img {
-    width: clamp(1.6rem, 1.8vw, 3rem);
+.card-btn_buy_one_click button svg {
+    width: clamp(1.6rem, 1.5vw, 3rem);
 }
 
 .card-btn_buy_one_click button {

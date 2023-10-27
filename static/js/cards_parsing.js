@@ -80,7 +80,12 @@ $(document).ready(function() {
         let getCard = getCardInfo(e, Product);
         showOrderWindow(getCard);
     })
-
+    $('.card-btn_buy_one_click svg').click(e => {
+    
+        setPosition = (e.screenY + screen.availHeight) / 2;
+        let getCard = getCardInfo(e, Product);
+        showOrderWindow(getCard);
+    })
 
     $('.order-info-header').click(() => {
         let showOrder = $('.order-block');
