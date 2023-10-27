@@ -94,8 +94,14 @@ class Card:
         brand = self.check_for_space(data['Бренд'])
         model = self.check_for_space(data['Модель'].strip())
         color = self.check_for_space(self.check_for_slash(data['Колір']))
+        name = f"{model}{color}"
             
-                
+        if data['Знижка'] != 0:
+                data['discountPrice'] = data['Ціна'] - self.calc_discount(data['Знижка'], data['Ціна'])
+                self.update_discount_column_database(data['id'], data['discountPrice'])       
+        else:
+            self.update_discount_column_database(data['id'], to_old_price=True)
+
         if category:
             """
             Отримуємо список всіх фотографії з вказаної
@@ -115,49 +121,17 @@ class Card:
             else:
                 photos = os.listdir(f'{path}/{categ}/{brand}/{model}{color}')
 
-        # Всі папки з фотографіями мають слітні назви без пробілів
-        # папка з фотографіями для фото має в назві модель та колір
-        name = f"{model}{color}"
-
-                                
         if category:
 
-            # Якщо категорія вказана повертаємо словник з повною інфою
-            # бібліотека cs50 одразу повертає нам словник з данними та назвами колонок в базі
-            # тому немає необхідності створювати словник того ми просто додаємо до наявного
-            # словника list з шляхами до папок з фотографіями
-
-            if data['Знижка'] != 0:
-
-                data['discountPrice'] = data['Ціна'] - self.calc_discount(data['Знижка'], data['Ціна'])
-                self.update_discount_column_database(data['id'], data['discountPrice'])
-                data['Розмір'] = data['Розмір'].split(' ')                         
-                data['photos'] = list(map(lambda x: f'{path}/{brand}/{name}/{x}', photos))
-                return data
-            
-            else:
-
-                data['Розмір'] = data['Розмір'].split(' ')                         
-                data['photos'] = list(map(lambda x: f'{path}/{brand}/{name}/{x}', photos))
-                self.update_discount_column_database(data['id'], to_old_price=True)
-                return data
+            data['Розмір'] = data['Розмір'].split(' ')                         
+            data['photos'] = list(map(lambda x: f'{path}/{brand}/{name}/{x}', photos))
+            return data
+        
         else:
 
-            if data['Знижка'] != 0:
-                data['discountPrice'] = data['Ціна'] - self.calc_discount(data['Знижка'], data['Ціна'])
-                self.update_discount_column_database(data['id'], data['discountPrice'])
-                data['Розмір'] = data['Розмір'].split(' ')                         
-                data['photos'] = list(map(lambda x: f'{path}/{categ}/{brand}/{name}/{x}', photos))
-                return data
-            
-
-            else:
-            # в іншому випадку така сама ситуація але без конкретної категорії
-
-                data['Розмір'] = data['Розмір'].split(' ') 
-                data['photos'] = list(map(lambda x: f'{path}/{categ}/{brand}/{name}/{x}', photos))
-                self.update_discount_column_database(data['id'], to_old_price=True)
-                return data
+            data['Розмір'] = data['Розмір'].split(' ') 
+            data['photos'] = list(map(lambda x: f'{path}/{categ}/{brand}/{name}/{x}', photos))
+            return data
 
 
         
@@ -348,9 +322,8 @@ class Card:
 
                     if lim == limitation:
                         break
-                    yield self.get_all_by_category(category, categ[i])
-                else:
-                    yield self.get_all_by_category(category, categ[i])
+                    
+                yield self.get_all_by_category(category, categ[i])
 
         elif pricemin and pricemax:
                     # Перебираємо всі товари де наявність = true (тобто 1), та ціна в діапазоні яку вказав юзер
@@ -374,7 +347,3 @@ class Card:
                 # Перебираємо всі товари де наявність == true, тобто 1
             for i in range(len(get_all)):
                 yield self.get_all_product(get_all[i])
-
-
-    def __str__(self):
-        return f'{self.__db} {self.__cursor}'
