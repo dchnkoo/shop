@@ -1,5 +1,7 @@
 const cards = [];
+const orders = [];
 const getDate = new Date();
+const LCSTORAGE = 'user_trash';
 
 let setPosition;
 let cardSetter = 11;
@@ -36,10 +38,12 @@ class Cards {
 
 
     #showProductPage = (e) => {
-        let getId = e.target.id;
+        let getObj;
 
-        getId !== null ? 
-            location.href = this.#baseUrl('/ProductPage?id=' + getId) : 
+        e.target.id !== null ? (
+            getObj = cards.filter(v => (v.productId === e.target.id))[0],
+            location.href = this.#baseUrl(`/ProductPage?id=${getObj.productId}&imgUrl=${getObj.image}&price=${getObj.price}&discount=${getObj.discount}&name=${getObj.name}&sizes=${getObj.sizes}`)
+        ) :
             location.href = this.#baseUrl('/');
     }
 
@@ -95,8 +99,8 @@ class Cards {
 
             // //////////////// price /////////////////////////////////////////
             try {
-                discountPrice = getCard.querySelector('.discountPrice').innerHTML;
-                priceProd = getCard.getElementsByClassName('card-price-without-discount')[0].innerHTML;
+                 priceProd = getCard.querySelector('.discountPrice').innerHTML;
+                 discountPrice = getCard.getElementsByClassName('card-price-without-discount')[0].innerHTML;
             } catch {
                 priceProd = getCard.getElementsByClassName('card-price')[0].innerHTML;
                 discountPrice = null;
@@ -257,12 +261,100 @@ function descriptionTxt() {
 }
 
 function getCardOrder(e) {
-    let c = cards.filter(v => (v.productId == e.target.id))[0];
+    let c = cards.filter(v => (v.productId == e.target.id) || (v.productId == e.productId))[0];
     return c;
 }
 
+function closeOrderWindow() {
+    let showOrder = $('.order-block');
+    
+    BGreBlur()
+
+    showOrder.removeClass('show').addClass('noactive');
+
+    showOrder.find('.form').css({
+        'display' : 'none'
+    });
+
+    showOrder.find('div').each((index, elem) => {
+        elem.getAttribute('class') === 'order-pre-form-btns' ? elem.style.display = 'flex' : null;    
+    })
+}
+
+function sumBcktPrice() {
+    if (orders.length < 1) {
+        document.getElementById('price-bckt').innerHTML = 0;
+        document.querySelector('.total-sum span.sum').innerHTML = 0;
+    } else {
+        document.getElementById('price-bckt').innerHTML = orders.reduce((e, v) => e + (parseInt(v.price) * parseInt(v.value)), 0)
+        document.querySelector('.total-sum span.sum').innerHTML = orders.reduce((e, v) => e + (parseInt(v.price) * parseInt(v.value)), 0)
+    }
+}
+
+function checkLocalStorage() {
+    let getObjects = JSON.parse(localStorage.getItem(LCSTORAGE));
+
+    if (getObjects) {
+        for (let obj in getObjects) {
+            appendToBckt(getObjects[obj])
+        }
+    }
+}
+
+function appendToBckt(obj) {
+    if (orders.filter(v => (v.productId === obj.productId) && (v.ordersize === obj.ordersize))[0]) {
+            let getObj = orders.findIndex(v => (v.productId === obj.productId) && (v.ordersize === obj.ordersize));
+
+            orders[getObj].value += obj.value;
+            document.querySelector('.products-bckt-container')
+                .querySelector(`div[id="${orders[getObj].ordersize}"]`).querySelector(`input`).value = orders[getObj].value;
+            sumBcktPrice()
+            localStorage.setItem(LCSTORAGE, JSON.stringify(orders))
+    } else {
+        orders.push(obj);
+        localStorage.setItem(LCSTORAGE, JSON.stringify(orders))
+    
+        if (document.querySelector('.bckt-orders .empty')) {
+            document.querySelector('.bckt-orders .empty').style.display = 'none'
+            document.querySelector('.go-form-btn-order').style.display = 'block'
+            document.querySelector('.total-sum').style.display = 'block';
+        }
+        
+        sumBcktPrice()
+    
+        if (obj.discount !== null) {
+            $('.bckt-orders').append(`<div id='${obj.ordersize}' class="order"><div class="bckt-img-container"><img src="${obj.image}"></div><div class="bckt-name_price"><div class="container"><p class="order-name">${obj.name} - ${obj.ordersize}</p><span class="card-price-without-discount">${obj.discount}</span><span class="discountPrice">${obj.price}</span></div><div class="btn-del"><input onchange='vlChange(this, this.parentElement.parentElement.parentElement)' id='${obj.productId}' type="number" min="1" value="${obj.value}"><button id='${obj.productId}' onclick='remElem(this)' class="del">Прибрати з корзини</button></div></div><span class="prodcutId-bckt noactive">${obj.productId}</span></div>`)
+        } else {
+            $('.bckt-orders').append(`<div id='${obj.ordersize}' class="order"><div class="bckt-img-container"><img src="${obj.image}"></div><div class="bckt-name_price"><div class="container"><p class="order-name">${obj.name} - ${obj.ordersize}</p><p class="order-price">${obj.price}</p></div><div class="btn-del"><input onchange='vlChange(this, this.parentElement.parentElement.parentElement)' id='${obj.productId}' type="number" min="1" value="${obj.value}"><button onclick='remElem(this)' id='${obj.productId}' class="del">Прибрати з корзини</button></div></div><span class="prodcutId-bckt noactive">${obj.productId}</span></div>`)
+        }
+    }
+}
 
 
+function vlChange(elem, parent) {
+    let getOrd = orders.findIndex(v => (v.productId === elem.id));
+
+    orders[getOrd].value = document.querySelector(`div[id="${parent.id}"]`).querySelector(`input[id="${elem.id}"]`).value;
+    sumBcktPrice()
+    localStorage.setItem(LCSTORAGE, JSON.stringify(orders))
+}
+
+
+function remElem(e) {
+    let getElem = orders.findIndex(obj => obj.productId === e.id);
+    e.parentElement.parentElement.parentElement.remove();
+    orders.splice(getElem, 1)
+    localStorage.setItem(LCSTORAGE, JSON.stringify(orders))
+
+    sumBcktPrice();
+    
+    if (orders.length < 1) {
+        document.querySelector('.bckt-orders .empty').style.display = 'flex';
+        document.querySelector('.go-form-btn-order').style.display = 'none';
+        document.querySelector('.form-order').style.display = 'none';
+        document.querySelector('.total-sum').style.display = 'none';
+    } 
+}
 
 
 
@@ -276,6 +368,7 @@ function getCardOrder(e) {
 let c = new Cards()
 window.onload = () => {
     c.getCardsInformationAndParse()
+    checkLocalStorage()
 
     $('.more-cards').click(c.showMoreBtn);
     
@@ -295,7 +388,6 @@ window.onload = () => {
     
     $('.card-btn_buy_one_click, .card-btn_buy_one_click svg').click(e => {
         setPosition = (e.screenY + screen.availHeight) / 2;
-        console.log(e)
         
         new Promise(r => {
             let card = getCardOrder(e);
@@ -305,22 +397,7 @@ window.onload = () => {
     })
     
     
-    $('.order-info-header').click(() => {
-        let showOrder = $('.order-block');
-    
-        BGreBlur()
-    
-        showOrder.removeClass('show').addClass('noactive');
-    
-        showOrder.find('.form').css({
-            'display' : 'none'
-        });
-    
-        showOrder.find('div').each((index, elem) => {
-            elem.getAttribute('class') === 'order-pre-form-btns' ? elem.style.display = 'flex' : null;    
-        })
-    
-    })
+    $('.order-info-header').click(closeOrderWindow)
 
     $('.go-form-btn').click(() => {
         let getElem = $('.order-block');
@@ -337,6 +414,10 @@ window.onload = () => {
 
 
     $('.product-size, .product-sizes label').click(function(e) {
+
+        if (document.getElementById('invalid')) {
+            document.getElementById('invalid').style.display = 'none'
+        }
 
         $('.product-size').css({
             'border-color' : '#33333326',
@@ -426,18 +507,16 @@ window.onload = () => {
 
 
     $('.bkt-btn').click((e) => {
-        let getObj = getCardOrder(e);
+        let getObj = JSON.parse(JSON.stringify(getCardOrder(e)));
 
         if (document.querySelector('.active-size')) {
             orderSize = document.querySelector('.active-size').innerHTML;
-            
-            if (getObj.discount !== null) {
-                $('.bckt-orders').append(`<div class="order"><div class="bckt-img-container"><img src="${getObj.image}"></div><div class="bckt-name_price"><div class="container"><p class="order-name">${getObj.name} - ${orderSize}</p><span class="card-price-without-discount">${getObj.price}</span><span class="discountPrice">${getObj.discount}</span></div><div class="btn-del"><button id="del">Прибрати з корзини</button></div></div><span class="prodcutId-bckt noactive">${getObj.productId}</span></div>`)
-            } else {
-                $('.bckt-orders').append(`<div class="order"><div class="bckt-img-container"><img src="${getObj.image}"></div><div class="bckt-name_price"><div class="container"><p class="order-name">${getObj.name} - ${orderSize}</p><p class="order-price">${getObj.price}</p></div><div class="btn-del"><button id="del">Прибрати з корзини</button></div></div><span class="prodcutId-bckt noactive">${getObj.productId}</span></div>`)
-            }
 
+            getObj.ordersize = orderSize;
+            getObj.value = 1;   
+            appendToBckt(getObj);
 
+            closeOrderWindow()
         } else if (!document.querySelector('.invalid-size')) {
             $('.order-templates-container').append('<span class="invalid-size">Для додавання товару в корзину оберіть розмір</span>');
         } else {

@@ -95,7 +95,6 @@ def ProductPage():
         prod = card.getProduct_for_page(id)
 
 
-
         return render_template('product_page.html',  
                             foot_cards=card.getProducts_database(random=4, limitation=5),
                             min=card.min_price,  max=card.max_price,

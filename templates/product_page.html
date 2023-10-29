@@ -66,8 +66,8 @@
                                     <p class="product-n" style="display: none;">{{ product['Кількість'] }}</p>
                                 </div>
                                 <div class="buy_bckt-btns">
-                                    <button id="buy">КУПИТИ</button>
-                                    <button id="in-bckt">В КОШИК<span></span></button>
+                                    <button onclick="buyBtn(this)" id="buy">КУПИТИ</button>
+                                    <button onclick="bcktBtn(this)" id="in-bckt">В КОШИК<span></span></button>
                                 </div>
                             </div>
                         </div>
@@ -77,7 +77,28 @@
         </main>
         {% include 'footer.html' %}
     </div>
+    <style>
+        @keyframes invalid {
+            0% {
+                transform: scale(1);
+            }
+            30% {
+                transform: rotateY(20deg);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            60% {
+                transform: rotateY(-20deg);
+            }
+            100% {
+                transform: rotateY(0);
+                transform: scale(1);
+            }
+        }
+    </style>
     {% include 'scripts.html' %}
+    <script src="/static/js/product_page.js"></script>
 
 </body>
 </html>
