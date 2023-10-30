@@ -283,10 +283,12 @@ function closeOrderWindow() {
 
 function sumBcktPrice() {
     if (orders.length < 1) {
-        document.getElementById('price-bckt').innerHTML = 0;
         document.querySelector('.total-sum span.sum').innerHTML = 0;
+        document.getElementById('counter-cards').style.display = 'none';
     } else {
-        document.getElementById('price-bckt').innerHTML = orders.reduce((e, v) => e + (parseInt(v.price) * parseInt(v.value)), 0)
+        document.getElementById('counter-cards').innerText = orders.length;
+        document.getElementById('counter-cards').style.display = 'flex';
+
         document.querySelector('.total-sum span.sum').innerHTML = orders.reduce((e, v) => e + (parseInt(v.price) * parseInt(v.value)), 0)
     }
 }
