@@ -1030,11 +1030,13 @@ footer {
     padding: 1rem;
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 
 .container-for-more-ptoduct h2 {
     font-size: var(--header-clamp);
     font-weight: bold;
+    text-align: center;
 }
 
 /* ///////////// FOOTER CATEGORIES /////////////// */
@@ -1339,10 +1341,6 @@ footer {
     }
 
     /* product-cards-container */
-    .product-cards-container {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-    }
 
     .product-cards-container .card .card-name {
         font-size: clamp(8px, 3vw, 17px);
@@ -1364,6 +1362,11 @@ footer {
 @media (max-width: 510px) {
     footer .categoty-cards-container {
         grid-template-columns: repeat(1, 1fr);
+    }
+
+    .product-cards-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .categoty-cards-container .category-cards {

@@ -472,7 +472,8 @@ window.onload = () => {
          'method' : 'POST',
          'body' : form
         })
-        .then(status => console.log(status))
+        .then(status => status.json())
+        .then(data => console.log(data))
         .catch(err => console.log(err))
     })
 

@@ -60,31 +60,32 @@ def search():
 # данні надсилаються сюди
 @app.route('/fastOrder', methods=['POST'])
 def fastForm():
-    if request.method == 'POST':
+    try:
         name = request.form['name']
         second_name = request.form['second_name']
         phone_number = request.form['phone']
         user_email = request.form['userEmail']
         productId = request.form['productId']
 
-        try:
-            if card.check_id_database(int(productId)):
-                print(name, second_name, phone_number, user_email, productId)
-                return app.response_class(
-                    response=json.dumps({"status":"success","code":200}),
-                    status=200,
-                    mimetype='application/json'
-                )
-            else: 
-                return app.response_class(
-                    response=json.dumps({"status":"Bad Request","code":400}),
-                    status=400,
-                    mimetype='application/json'
-                )
-        except:
-            return redirect(get_domain())
-    else: 
-        return redirect(get_domain())
+        if card.check_id_database(int(productId)):
+            print(name, second_name, phone_number, user_email, productId)
+            return app.response_class(
+                response=json.dumps({"status":"success","code":200}),
+                status=200,
+                mimetype='application/json'
+            )
+        else: 
+            return app.response_class(
+                response=json.dumps({"status":"Bad Request","code":400}),
+                status=400,
+                mimetype='application/json'
+            )
+    except:
+        return app.response_class(
+                response=json.dumps({"status":"Bad Request","code":400}),
+                status=400,
+                mimetype='application/json'
+            )
 
 
 # product_page.html 

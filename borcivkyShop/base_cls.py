@@ -1,5 +1,6 @@
 # база данних для роботи з товарами
 from cs50 import SQL
+import numpy as np  
 
 # дефолт бібліотеки пайтон
 from random import choice
@@ -64,18 +65,11 @@ class Card:
         
     @staticmethod
     def check_photos_for_page(photos: list):
-        result = []
 
         if len(photos) < 2:
             return photos
-
-        for i in range(len(photos)):
-            if len(photos[i]) <= 8:
-                result.append(photos[i])
-            else:
-                continue
-            
-        return result
+        
+        return np.array(photos)[list(map(lambda x: len(x) <= 8, photos))]
     
     @staticmethod
     def random_image_for_banner():

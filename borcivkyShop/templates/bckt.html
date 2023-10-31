@@ -34,6 +34,10 @@
                     <label for="phone">Електрона пошта</label>
                     <input type="email" name="userEmail" placeholder="example@gmail.com">
                 </div>
+                <div>
+                    <input placeholder="Виберіть місто" list="choose-city" onchange='showWarHouses(this)' id="choose-city-input" name="choose-city">
+                    <datalist name="choose-city" id="choose-city"></datalist>
+                </div>
                 <div class="info-inputs">
                     <input type="text" name="prodcutId" class="noactive">
                 </div>
