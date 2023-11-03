@@ -1,0 +1,6 @@
+ECHO is on.
+*.cfg
+Scripts/
+Lib/
+Include/
+__pycache__/
