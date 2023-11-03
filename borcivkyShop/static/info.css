@@ -14,7 +14,7 @@ main div:hover {
 
 
 
-h2 {
+.page-container > main > div > h2 {
     font-size: clamp(1.3rem ,1.7vw, 2.5rem);
     font-weight: bolder;
 

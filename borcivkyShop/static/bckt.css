@@ -1,14 +1,31 @@
-.products-bckt-container {
+.products-bckt-window {
+    width: 100vw;
+
+    display: none;
+
+
+
+    top: 0;
     position: absolute;
     z-index: 999;
-    top: 4rem;
+}
 
-    min-width:50vw;
+.window-bckt-container {
+    height: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+
+.products-bckt-container {
+
+    margin-top: 10rem;
+    min-width: 55vw;
     padding: 2rem 4rem;
     background-color: #fff;
     border-radius: 20px;
-
-    display: none;
 }
 
 .products-bckt .header-bckt {
@@ -18,9 +35,10 @@
     justify-content: space-between;
 }
 
-.products-bckt .header-bckt > h1 {
+.products-bckt h1 {
     font-size: clamp(1.2rem, 2vw, 2.5rem);
     font-weight: bold;
+    margin-bottom: 1rem;
 }
 
 .products-bckt .header-bckt > button {
@@ -169,12 +187,6 @@
     } to {
         opacity: 1;
     }
-}
-
-.products-bckt .form-order h2 {
-    font-size: clamp(1.2rem, 2vw, 2.5rem);
-    font-weight: bold;
-    margin-bottom: 1rem;
 }
 
 .products-bckt .form-order .submit-bckt {

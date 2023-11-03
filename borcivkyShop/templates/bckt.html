@@ -1,47 +1,48 @@
-<div class="products-bckt-container">
-    <div class="products-bckt">
-        <div class="header-bckt">
-            <h1>Корзина</h1>
-            <button id="order-bckt-crosser">╳</button>
-        </div>
-        <div class="bckt-orders">
-            <div class="empty">
-                <p>Корзина порожня</p>
-            </div>
-        </div>
-        <div class="total-sum">
-            <span>Сума: </span><span class="sum">0</span><span>&#8372;</span>
-        </div>
-        <div class="btn-container">
-            <button class="go-form-btn-order">Оформити замовлення</button>
-        </div>
-        <div class="form-order">
-            <div class="order-form">
-                <h2>Ваші контактні данні</h2>
-                <div class="userName">
-                    <label for="name">Ім'я</label>
-                    <input name="name" type="text" autofocus autocomplete="off">
+<div class="products-bckt-window">
+    <div class="window-bckt-container">
+        <div class="products-bckt-container">
+            <div class="products-bckt">
+                <div class="header-bckt">
+                    <h1>Корзина</h1>
+                    <button id="order-bckt-crosser">╳</button>
                 </div>
-                <div class="userSecondName">
-                    <label for="second_name">Прізвище</label>
-                    <input name="second_name" type="text" autocomplete="off">
+                <div class="bckt-orders">
+                    <div class="empty">
+                        <p>Корзина порожня</p>
+                    </div>
                 </div>
-                <div class="userPhone">
-                    <label for="phone">Мобільний телефон</label>
-                    <input type="text" name="phone" placeholder="+ 38 (000) 000 00 00">
+                <div class="total-sum">
+                    <span>Сума: </span><span class="sum">0</span><span>&#8372;</span>
                 </div>
-                <div class="userEmail">
-                    <label for="phone">Електрона пошта</label>
-                    <input type="email" name="userEmail" placeholder="example@gmail.com">
+                <div class="btn-container">
+                    <button class="go-form-btn-order">Оформити замовлення</button>
                 </div>
-                <div>
-                    <input placeholder="Виберіть місто" list="choose-city" onchange='showWarHouses(this)' id="choose-city-input" name="choose-city">
-                    <datalist name="choose-city" id="choose-city"></datalist>
+                <div class="form-order">
+                    <div class="order-form">
+                        <h1>Ваші контактні данні</h1>
+                        <div class="userName">
+                            <label for="name">Ім'я</label>
+                            <input name="name" type="text" autofocus autocomplete="off">
+                        </div>
+                        <div class="userSecondName">
+                            <label for="second_name">Прізвище</label>
+                            <input name="second_name" type="text" autocomplete="off">
+                        </div>
+                        <div class="userPhone">
+                            <label for="phone">Мобільний телефон</label>
+                            <input type="text" name="phone" placeholder="+ 38 (000) 000 00 00">
+                        </div>
+                        <div class="userEmail">
+                            <label for="phone">Електрона пошта</label>
+                            <input type="email" name="userEmail" placeholder="example@gmail.com">
+                        </div>
+                        {% include "np_z.html" %}
+                        <div class="info-inputs">
+                            <input type="text" name="prodcutId" class="noactive">
+                        </div>
+                        <input class="submit-bckt" type="submit" value="Підтвердити замовлення">
+                    </div>
                 </div>
-                <div class="info-inputs">
-                    <input type="text" name="prodcutId" class="noactive">
-                </div>
-                <input class="submit-bckt" type="submit" value="Підтвердити замовлення">
             </div>
         </div>
     </div>

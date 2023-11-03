@@ -101,7 +101,7 @@
     display: none;
 }
 
-input[type='radio'] {
+input[type='radio']:not(input[name='req']) {
     display: none;
 }
 
@@ -122,6 +122,11 @@ input[type='radio'] {
     justify-content: flex-start;
     align-items: center;
 
+}
+
+.active-size {
+    border-color: #46A358;
+    color: #46A358;
 }
 
 .product-sizes > div > div {

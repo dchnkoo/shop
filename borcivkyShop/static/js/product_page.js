@@ -5,7 +5,11 @@ const nameUrl = urlParams.get('name')
 const imgUrl = urlParams.get('imgUrl');
 const priceurl = urlParams.get('price');
 let discountUrl = urlParams.get('discount');
-const sizesUrl = urlParams.get('sizes')
+const sizes = [];
+
+document.querySelectorAll('.product-size').forEach(elem => {
+    sizes.push(elem.innerText)
+}) 
 
 if (discountUrl === 'null') {
     discountUrl = null;
@@ -17,8 +21,9 @@ const Product = new Card({
     image: imgUrl,
     price: priceurl,
     discount: discountUrl,
-    sizes: sizesUrl.split(','),
+    sizes: sizes
 })
+
 
 
 function dlAnim() {
@@ -51,6 +56,8 @@ function setDopObj() {
 function buyBtn() {
     if (document.querySelector('.active-size')) {
         setDopObj()
+        console.log(Product)
+        showOrderWindow(Product)
     } else {
         if (document.getElementById('invalid')) {
             setPAniamtion()
@@ -72,6 +79,3 @@ function bcktBtn() {
         }
     }
 }
-
-
-console.log(idurl, imgUrl, priceurl, discountUrl, nameUrl, sizesUrl)

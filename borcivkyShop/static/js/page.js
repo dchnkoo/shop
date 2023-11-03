@@ -155,7 +155,11 @@ function setSizes(obj) {
     const block = $('.sizes > div');
     block.empty()
     obj.sizes.map(e => {
-        block.append("<span class='product-size'>" + e + "</span>");
+        if (obj.ordersize && e === obj.ordersize) {
+            block.append("<span class='product-size active-size'>" + e + "</span>");
+        } else {
+            block.append("<span class='product-size'>" + e + "</span>");
+        }
         
         $('.product-size').click(function(e) {
             $('.product-size').css({
@@ -181,7 +185,12 @@ function setSizes(obj) {
 function showOrderWindow(obj) {
     let getOrederWindow = document.querySelector('.show-order-block');
     let orderBlock = $('.order-block')
-    getOrederWindow.getElementsByClassName('bkt-btn')[0].setAttribute('id', obj.productId)
+    
+    try {
+        getOrederWindow.getElementsByClassName('bkt-btn')[0].setAttribute('id', obj.productId)
+    } catch {
+
+    }
 
     Array.from(getOrederWindow.getElementsByTagName('input')).forEach(elem => {
         if (elem.name === 'prodcutId') {
@@ -224,6 +233,16 @@ function showOrderWindow(obj) {
     setSizes(obj);
     BGblur();
 
+    getOrederWindow.onclick = e => {
+        if (Array.from(e.target.classList).includes('show-order-block')) {
+            closeOrderWindow()
+        }
+    }
+
+
+    getOrederWindow.style.height = document.documentElement.offsetHeight + 'px';
+    getOrederWindow.classList.remove('noactive')
+    getOrederWindow.classList.add('show')
     orderBlock.removeClass('noactive').addClass('show').css({'top' : setPosition + 'px'});
     orderBlock[0].scrollIntoView();
 }
@@ -266,9 +285,13 @@ function getCardOrder(e) {
 }
 
 function closeOrderWindow() {
+    let getOrederWindow = document.querySelector('.show-order-block');
     let showOrder = $('.order-block');
     
     BGreBlur()
+
+    getOrederWindow.classList.add('noactive')
+    getOrederWindow.classList.remove('show')
 
     showOrder.removeClass('show').addClass('noactive');
 
@@ -304,12 +327,12 @@ function checkLocalStorage() {
 }
 
 function appendToBckt(obj) {
-    if (orders.filter(v => (v.productId === obj.productId) && (v.ordersize === obj.ordersize))[0]) {
-            let getObj = orders.findIndex(v => (v.productId === obj.productId) && (v.ordersize === obj.ordersize));
+    if (orders.findIndex(v => v.productId === obj.productId && v.ordersize === obj.ordersize) !== -1) {
+            let getObj = orders.findIndex(v => v.productId === obj.productId && v.ordersize === obj.ordersize);
 
             orders[getObj].value += obj.value;
             document.querySelector('.products-bckt-container')
-                .querySelector(`div[id="${orders[getObj].ordersize}"]`).querySelector(`input`).value = orders[getObj].value;
+                .querySelector(`div[id="${orders[getObj].ordersize + orders[getObj].productId}"]`).querySelector(`input`).value = orders[getObj].value;
             sumBcktPrice()
             localStorage.setItem(LCSTORAGE, JSON.stringify(orders))
     } else {
@@ -325,16 +348,16 @@ function appendToBckt(obj) {
         sumBcktPrice()
     
         if (obj.discount !== null) {
-            $('.bckt-orders').append(`<div id='${obj.ordersize}' class="order"><div class="bckt-img-container"><img src="${obj.image}"></div><div class="bckt-name_price"><div class="container"><p class="order-name">${obj.name} - ${obj.ordersize}</p><span class="card-price-without-discount">${obj.discount}</span><span class="discountPrice">${obj.price}</span></div><div class="btn-del"><input onchange='vlChange(this, this.parentElement.parentElement.parentElement)' id='${obj.productId}' type="number" min="1" value="${obj.value}"><button id='${obj.productId}' onclick='remElem(this)' class="del">Прибрати з корзини</button></div></div><span class="prodcutId-bckt noactive">${obj.productId}</span></div>`)
+            $('.bckt-orders').append(`<div id='${obj.ordersize + obj.productId}' class="order"><div class="bckt-img-container"><img src="${obj.image}"></div><div class="bckt-name_price"><div class="container"><p class="order-name">${obj.name} - ${obj.ordersize}</p><span class="card-price-without-discount">${obj.discount}</span><span class="discountPrice">${obj.price}</span></div><div class="btn-del"><input onchange='vlChange(this, this.parentElement.parentElement.parentElement)' id='${obj.productId}' type="number" min="1" value="${obj.value}"><button id='${obj.productId}' onclick='remElem(this)' class="del">Прибрати з корзини</button></div></div><span class="prodcutId-bckt noactive">${obj.productId}</span></div>`)
         } else {
-            $('.bckt-orders').append(`<div id='${obj.ordersize}' class="order"><div class="bckt-img-container"><img src="${obj.image}"></div><div class="bckt-name_price"><div class="container"><p class="order-name">${obj.name} - ${obj.ordersize}</p><p class="order-price">${obj.price}</p></div><div class="btn-del"><input onchange='vlChange(this, this.parentElement.parentElement.parentElement)' id='${obj.productId}' type="number" min="1" value="${obj.value}"><button onclick='remElem(this)' id='${obj.productId}' class="del">Прибрати з корзини</button></div></div><span class="prodcutId-bckt noactive">${obj.productId}</span></div>`)
+            $('.bckt-orders').append(`<div id='${obj.ordersize + obj.productId}' class="order"><div class="bckt-img-container"><img src="${obj.image}"></div><div class="bckt-name_price"><div class="container"><p class="order-name">${obj.name} - ${obj.ordersize}</p><p class="order-price">${obj.price}</p></div><div class="btn-del"><input onchange='vlChange(this, this.parentElement.parentElement.parentElement)' id='${obj.productId}' type="number" min="1" value="${obj.value}"><button onclick='remElem(this)' id='${obj.productId}' class="del">Прибрати з корзини</button></div></div><span class="prodcutId-bckt noactive">${obj.productId}</span></div>`)
         }
     }
 }
 
 
 function vlChange(elem, parent) {
-    let getOrd = orders.findIndex(v => (v.productId === elem.id));
+    let getOrd = orders.findIndex(v => v.productId === elem.id);
 
     orders[getOrd].value = document.querySelector(`div[id="${parent.id}"]`).querySelector(`input[id="${elem.id}"]`).value;
     sumBcktPrice()
@@ -356,6 +379,13 @@ function remElem(e) {
         document.querySelector('.form-order').style.display = 'none';
         document.querySelector('.total-sum').style.display = 'none';
     } 
+}
+
+function setOrdersClose() {
+    BGreBlur()
+    $('.products-bckt-window').css('display', 'none');
+    $('.products-bckt .form-order').css('display', 'none');
+    $('.btn-container').css('display', 'block');
 }
 
 
@@ -388,14 +418,17 @@ window.onload = () => {
     })
 
     
-    $('.card-btn_buy_one_click, .card-btn_buy_one_click svg').click(e => {
+    $('.card-btn_buy_one_click, .card-btn_buy_one_click img').click(e => {
         setPosition = (e.screenY + screen.availHeight) / 2;
         
+        console.log(e)
         new Promise(r => {
             let card = getCardOrder(e);
             r(card)
         })
-        .then(data => showOrderWindow(data))
+        .then(data =>{
+            showOrderWindow(data)
+        })
     })
     
     
@@ -486,11 +519,7 @@ window.onload = () => {
 
 
     $('#order-bckt-crosser').click(() => {
-        BGreBlur()
-
-        $('.products-bckt-container').css('display', 'none');
-        $('.products-bckt .form-order').css('display', 'none');
-        $('.btn-container').css('display', 'block');
+        setOrdersClose()
 
     })
 
@@ -498,9 +527,19 @@ window.onload = () => {
     $('.header-nav-backet_btn').click(() => {
         BGblur()
 
-        $('.products-bckt-container').fadeIn();
+        document.querySelector('.products-bckt-window').style.height = document.documentElement.offsetHeight + 'px'
+
+        $('.products-bckt-window').fadeIn();
 
     })
+
+    document.querySelector('.window-bckt-container').onclick = e => {
+        console.log(e.target.classList)
+        if (e.target.classList.value === 'window-bckt-container') {
+            setOrdersClose()
+
+        }
+    }
 
 
     $('.bkt-btn').click((e) => {

@@ -15,11 +15,14 @@ def get_domain():
     ctx = request_ctx
     return ctx.request.host_url
 
+def get_user_IP():
+    return request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr)
 
 """ //////////////////////////////////// Блок з ініціалізацією сторінок html /////////////////////////////////////////// """
 # home.html
 @app.route('/')
 def home_page():
+    print(get_user_IP())
     return render_template('home.html', 
                            get_categories=card.get_categories,
                            image=card.random_image_for_banner, 
@@ -30,6 +33,7 @@ def home_page():
 # search.html
 @app.route('/search', methods=['POST', 'GET'])
 def search():
+    print(get_user_IP())
     if request.method == 'GET':
         try:
             category = request.args.get('category')
@@ -60,6 +64,7 @@ def search():
 # данні надсилаються сюди
 @app.route('/fastOrder', methods=['POST'])
 def fastForm():
+    print(get_user_IP())
     try:
         name = request.form['name']
         second_name = request.form['second_name']
@@ -91,6 +96,7 @@ def fastForm():
 # product_page.html 
 @app.route('/ProductPage')
 def ProductPage():
+    print(get_user_IP())
     id = request.args.get('id')
     if card.check_id_database(id) != False:
         prod = card.getProduct_for_page(id)
@@ -106,6 +112,7 @@ def ProductPage():
 # new_products.html
 @app.route('/newProducts')
 def newProducts():
+    print(get_user_IP())
     return render_template('new_products.html',
                             get_categories=card.get_categories,
                             foot_category=card.categories_for_footer,
@@ -116,6 +123,7 @@ def newProducts():
 # discountPage.html
 @app.route('/discounts')
 def dsPAge():
+    print(get_user_IP())
     return render_template('discountPage.html',
                             get_categories=card.get_categories,
                             foot_category=card.categories_for_footer,
@@ -125,6 +133,7 @@ def dsPAge():
 
 @app.route('/infoBuyAndDelivery')
 def infoPage():
+    print(get_user_IP())
     return render_template('info.html',
                             min=card.min_price,  max=card.max_price)
 
