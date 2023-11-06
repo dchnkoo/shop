@@ -1062,6 +1062,10 @@ input[id='choose-vid-input'] {
     background: #919191;
 }
 
+.oplata {
+    position: relative;
+}
+
 .oplata > div {
     display: flex;
     flex-flow: column nowrap;
@@ -1069,6 +1073,41 @@ input[id='choose-vid-input'] {
 
 .oplata > div span {
     margin: 0.5rem 0;
+}
+
+.succes-order {
+    display: none;
+}
+
+.op-animation {
+    animation: order-op 1s forwards;
+}
+
+@keyframes order-op {
+    from {
+        opacity: 1;
+    } to {
+        opacity: 0;
+        display: none;
+    }
+}
+
+.polyline {
+    stroke-dasharray: 700;
+    stroke-dashoffset: 700;
+    opacity: 0.4;
+
+    animation: succes 3s ease-in forwards 1s;
+}
+
+@keyframes succes {
+    from {
+        stroke-dashoffset: 700;
+        opacity: 0.4;
+    } to {
+        stroke-dashoffset: 0;
+        opacity: 1;
+    }
 }
 
 

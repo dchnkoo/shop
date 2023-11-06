@@ -6,6 +6,7 @@ import numpy as np
 from random import choice
 import os
 
+db = SQL('sqlite:///borcivky.db')
 
 """ ////////////////////////// VARIABLES //////////////////////////////////// """
 
@@ -26,7 +27,7 @@ _Card__sql_query_get_unik_categories = 'SELECT DISTINCT Категорія FROM 
 
 class Card:
     def __init__(self):
-        self.__db = SQL('sqlite:///borcivky.db')
+        self.__db = db
 
 
     @staticmethod
@@ -341,3 +342,22 @@ class Card:
                 # Перебираємо всі товари де наявність == true, тобто 1
             for i in range(len(get_all)):
                 yield self.get_all_product(get_all[i])
+
+
+
+insert_order_information = 'INSERT INTO orders VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+
+
+
+class Orders:
+
+    def __init__(self):
+        self.__db = db
+
+    def insert_order(self, count, **kwards):
+
+        self.__db.execute(insert_order_information, 
+                          kwards['orderId'], kwards['idProduct'],
+                          kwards['size'], kwards['name'], kwards['secondName'],
+                          kwards['userPhone'], kwards['userEmail'], kwards['City'], kwards['vidil'],
+                          kwards['opl'], kwards['time'], count)

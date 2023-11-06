@@ -16,7 +16,7 @@ if (discountUrl === 'null') {
 }
 
 const Product = new Card({
-    productId: idurl,
+    idProduct: idurl,
     name: nameUrl,
     image: imgUrl,
     price: priceurl,
@@ -70,7 +70,15 @@ function buyBtn() {
 function bcktBtn() {
     if (document.querySelector('.active-size')) {
         setDopObj()
-        appendToBckt(JSON.parse(JSON.stringify(Product)))
+        appendToBckt(proxyObjCreator(JSON.parse(JSON.stringify(Product)), {
+            set(t, p, v) {
+                if (p !== 'value') {
+                    throw new Error('Please do not touch(((')
+                } else {
+                    t[p] = v
+                }
+            }
+        }))
     } else {
         if (document.getElementById('invalid')) {
             setPAniamtion()

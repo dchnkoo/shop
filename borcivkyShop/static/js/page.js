@@ -6,18 +6,6 @@ const LCSTORAGE = 'user_trash';
 let setPosition;
 let cardSetter = 11;
 
-class Card {
-    constructor(options) {
-        this.productId = options.productId
-        this.image = options.image
-        this.name = options.name
-        this.price = options.price
-        this.discount = options.discount
-        this.sizes = options.sizes
-        this.element = options.element
-    }
-}
-
 
 class Cards {
 
@@ -41,8 +29,8 @@ class Cards {
         let getObj;
 
         e.target.id !== null ? (
-            getObj = cards.filter(v => (v.productId === e.target.id))[0],
-            location.href = this.#baseUrl(`/ProductPage?id=${getObj.productId}&imgUrl=${getObj.image}&price=${getObj.price}&discount=${getObj.discount}&name=${getObj.name}&sizes=${getObj.sizes}`)
+            getObj = cards.filter(v => (v.idProduct === e.target.id))[0],
+            location.href = this.#baseUrl(`/ProductPage?id=${getObj.idProduct}&imgUrl=${getObj.image}&price=${getObj.price}&discount=${getObj.discount}&name=${getObj.name}&sizes=${getObj.sizes}`)
         ) :
             location.href = this.#baseUrl('/');
     }
@@ -113,14 +101,22 @@ class Cards {
             })
             sizesProd = tmSizeArr;
 
-            cards.push(new Card({
-                productId: prodId,
+            cards.push(proxyObjCreator({
+                idProduct: prodId,
                 image: img,
                 name: nameProduct,
                 price: priceProd,
                 discount: discountPrice,
                 sizes: sizesProd,
                 element: element
+            }, {
+                set(t, p, v) {
+                    if (p in t) {
+                        throw new Error('ЕЕЕЕЕЕ, угомонись нахооооооой!')
+                    } else {
+                        t[p] = v
+                    }
+                }
             }))
     
     
@@ -187,14 +183,14 @@ function showOrderWindow(obj) {
     let orderBlock = $('.order-block')
     
     try {
-        getOrederWindow.getElementsByClassName('bkt-btn')[0].setAttribute('id', obj.productId)
+        getOrederWindow.getElementsByClassName('bkt-btn')[0].setAttribute('id', obj.idProduct)
     } catch {
 
     }
 
     Array.from(getOrederWindow.getElementsByTagName('input')).forEach(elem => {
         if (elem.name === 'prodcutId') {
-            elem.setAttribute('value', obj.productId);
+            elem.setAttribute('value', obj.idProduct);
         }
     })
 
@@ -280,7 +276,7 @@ function descriptionTxt() {
 }
 
 function getCardOrder(e) {
-    let c = cards.filter(v => (v.productId == e.target.id) || (v.productId == e.productId))[0];
+    let c = cards.filter(v => (v.idProduct == e.target.id) || (v.idProduct == e.idProduct))[0];
     return c;
 }
 
@@ -289,6 +285,16 @@ function closeOrderWindow() {
     let showOrder = $('.order-block');
     
     BGreBlur()
+
+    document.querySelectorAll('.order-form').forEach(elem => {
+        if (elem.classList.contains('op-animation')) {
+            elem.classList.remove('op-animation');
+    
+            document.querySelector('.succes-order').style.display = 'none';
+        }
+
+    });
+
 
     getOrederWindow.classList.add('noactive')
     getOrederWindow.classList.remove('show')
@@ -321,18 +327,27 @@ function checkLocalStorage() {
 
     if (getObjects) {
         for (let obj in getObjects) {
-            appendToBckt(getObjects[obj])
+            appendToBckt(proxyObjCreator(getObjects[obj], {
+                set(t, p, v) {
+                    if (p === 'value') {
+                        t[p] = v
+                    } else {
+                        throw new Error('....shhhh');
+                        
+                    }
+                }
+            }))
         }
     }
 }
 
 function appendToBckt(obj) {
-    if (orders.findIndex(v => v.productId === obj.productId && v.ordersize === obj.ordersize) !== -1) {
-            let getObj = orders.findIndex(v => v.productId === obj.productId && v.ordersize === obj.ordersize);
+    if (orders.findIndex(v => v.idProduct === obj.idProduct && v.ordersize === obj.ordersize) !== -1) {
+            let getObj = orders.findIndex(v => v.idProduct === obj.idProduct && v.ordersize === obj.ordersize);
 
-            orders[getObj].value += obj.value;
+            orders[getObj].value += parseInt(obj.value);
             document.querySelector('.products-bckt-container')
-                .querySelector(`div[id="${orders[getObj].ordersize + orders[getObj].productId}"]`).querySelector(`input`).value = orders[getObj].value;
+                .querySelector(`div[id="${orders[getObj].ordersize + orders[getObj].idProduct}"]`).querySelector(`input`).value = orders[getObj].value;
             sumBcktPrice()
             localStorage.setItem(LCSTORAGE, JSON.stringify(orders))
     } else {
@@ -348,25 +363,25 @@ function appendToBckt(obj) {
         sumBcktPrice()
     
         if (obj.discount !== null) {
-            $('.bckt-orders').append(`<div id='${obj.ordersize + obj.productId}' class="order"><div class="bckt-img-container"><img src="${obj.image}"></div><div class="bckt-name_price"><div class="container"><p class="order-name">${obj.name} - ${obj.ordersize}</p><span class="card-price-without-discount">${obj.discount}</span><span class="discountPrice">${obj.price}</span></div><div class="btn-del"><input onchange='vlChange(this, this.parentElement.parentElement.parentElement)' id='${obj.productId}' type="number" min="1" value="${obj.value}"><button id='${obj.productId}' onclick='remElem(this)' class="del">Прибрати з корзини</button></div></div><span class="prodcutId-bckt noactive">${obj.productId}</span></div>`)
+            $('.bckt-orders').append(`<div id='${obj.ordersize + obj.idProduct}' class="order"><div class="bckt-img-container"><img src="${obj.image}"></div><div class="bckt-name_price"><div class="container"><p class="order-name">${obj.name} - ${obj.ordersize}</p><span class="card-price-without-discount">${obj.discount}</span><span class="discountPrice">${obj.price}</span></div><div class="btn-del"><input onchange='vlChange(this, this.parentElement.parentElement.parentElement)' id='${obj.idProduct}' type="number" min="1" value="${obj.value}"><button id='${obj.idProduct}' onclick='remElem(this)' class="del">Прибрати з корзини</button></div></div><span class="prodcutId-bckt noactive">${obj.idProduct}</span></div>`)
         } else {
-            $('.bckt-orders').append(`<div id='${obj.ordersize + obj.productId}' class="order"><div class="bckt-img-container"><img src="${obj.image}"></div><div class="bckt-name_price"><div class="container"><p class="order-name">${obj.name} - ${obj.ordersize}</p><p class="order-price">${obj.price}</p></div><div class="btn-del"><input onchange='vlChange(this, this.parentElement.parentElement.parentElement)' id='${obj.productId}' type="number" min="1" value="${obj.value}"><button onclick='remElem(this)' id='${obj.productId}' class="del">Прибрати з корзини</button></div></div><span class="prodcutId-bckt noactive">${obj.productId}</span></div>`)
+            $('.bckt-orders').append(`<div id='${obj.ordersize + obj.idProduct}' class="order"><div class="bckt-img-container"><img src="${obj.image}"></div><div class="bckt-name_price"><div class="container"><p class="order-name">${obj.name} - ${obj.ordersize}</p><p class="order-price">${obj.price}</p></div><div class="btn-del"><input onchange='vlChange(this, this.parentElement.parentElement.parentElement)' id='${obj.idProduct}' type="number" min="1" value="${obj.value}"><button onclick='remElem(this)' id='${obj.idProduct}' class="del">Прибрати з корзини</button></div></div><span class="prodcutId-bckt noactive">${obj.idProduct}</span></div>`)
         }
     }
 }
 
 
 function vlChange(elem, parent) {
-    let getOrd = orders.findIndex(v => v.productId === elem.id);
+    let getOrd = orders.findIndex(v => v.idProduct === elem.id);
 
-    orders[getOrd].value = document.querySelector(`div[id="${parent.id}"]`).querySelector(`input[id="${elem.id}"]`).value;
+    orders[getOrd].value = parseInt(document.querySelector(`div[id="${parent.id}"]`).querySelector(`input[id="${elem.id}"]`).value);
     sumBcktPrice()
     localStorage.setItem(LCSTORAGE, JSON.stringify(orders))
 }
 
 
 function remElem(e) {
-    let getElem = orders.findIndex(obj => obj.productId === e.id);
+    let getElem = orders.findIndex(obj => obj.idProduct === e.id);
     e.parentElement.parentElement.parentElement.remove();
     orders.splice(getElem, 1)
     localStorage.setItem(LCSTORAGE, JSON.stringify(orders))
@@ -387,6 +402,8 @@ function setOrdersClose() {
     $('.products-bckt .form-order').css('display', 'none');
     $('.btn-container').css('display', 'block');
 }
+
+const proxyObjCreator = (target, handler) => new Proxy(target, handler)
 
 
 
@@ -421,7 +438,6 @@ window.onload = () => {
     $('.card-btn_buy_one_click, .card-btn_buy_one_click img').click(e => {
         setPosition = (e.screenY + screen.availHeight) / 2;
         
-        console.log(e)
         new Promise(r => {
             let card = getCardOrder(e);
             r(card)
@@ -498,18 +514,6 @@ window.onload = () => {
 
     descriptionTxt();
 
-    $('.form .submit').click(() => {
-        const form = new FormData()
- 
-        fetch('/fastOrder', {
-         'method' : 'POST',
-         'body' : form
-        })
-        .then(status => status.json())
-        .then(data => console.log(data))
-        .catch(err => console.log(err))
-    })
-
 
     $('.btn-container .go-form-btn-order').click(() => {
         $('.btn-container').css('display', 'none');
@@ -534,7 +538,6 @@ window.onload = () => {
     })
 
     document.querySelector('.window-bckt-container').onclick = e => {
-        console.log(e.target.classList)
         if (e.target.classList.value === 'window-bckt-container') {
             setOrdersClose()
 
@@ -549,8 +552,18 @@ window.onload = () => {
             orderSize = document.querySelector('.active-size').innerHTML;
 
             getObj.ordersize = orderSize;
-            getObj.value = 1;   
-            appendToBckt(getObj);
+            getObj.value = 1;  
+
+            appendToBckt(proxyObjCreator(getObj, {
+                set(t, p, v) {
+                    if (p === 'value') {
+                        t[p] = v
+                    } else {
+                        throw new Error('....shhhh');
+                        
+                    }
+                }
+            }));
 
             closeOrderWindow()
         } else if (!document.querySelector('.invalid-size')) {

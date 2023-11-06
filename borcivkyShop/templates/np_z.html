@@ -14,17 +14,11 @@
 <div class="oplata">
     <h1>Виберіть тип оплати</h1>
     <div>
-        <span>
-            <input type="radio" name="req">
-            <label for="nal">Накладним платежем</label>
-        </span>
-        <span>
-            <input type="radio" name="req">
-            <label for="card">Онлайн оплата через Нову Пошту</label>
-        </span>
-        <span>
-            <input type="radio" name="req">
-            <label for="req">Оплата за реквізитами PrivatBank або Monobank</label>
-        </span>
+        {% for op in oplata %}
+            <span>
+                <input class="orders-opl-elems" type="radio" name="req" value="{{ op }}">
+                <label for="nal">{{ op }}</label>
+            </span>
+        {% endfor %}
     </div>
 </div>
