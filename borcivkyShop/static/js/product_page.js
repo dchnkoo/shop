@@ -15,14 +15,14 @@ if (discountUrl === 'null') {
     discountUrl = null;
 }
 
-const Product = new Card({
+const Product = {
     idProduct: idurl,
     name: nameUrl,
     image: imgUrl,
     price: priceurl,
     discount: discountUrl,
     sizes: sizes
-})
+}
 
 
 
@@ -79,6 +79,7 @@ function bcktBtn() {
                 }
             }
         }))
+        scAdd()
     } else {
         if (document.getElementById('invalid')) {
             setPAniamtion()

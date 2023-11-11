@@ -1,4 +1,43 @@
 <script src="/static/js/jquery-3.7.1.min.js"></script>
-<script defer src="/static/js/order.js"></script>
 <script defer src="/static/js/page.js"></script>
+<script defer src="/static/js/order.js"></script>
 <script src="/static/js/nv_api.js"></script>
+<script>
+    document.querySelector('.sortBy span').onclick = () => {
+        let get = document.querySelector('.sortBy ul');
+
+        if (get.style.display === 'block') {
+            get.style.display = 'none';
+        } else {
+            get.style.display = 'block';
+        }
+    }
+
+    document.querySelector('.sortBy').querySelectorAll('ul li').forEach(elem => {
+        elem.onclick = e => {
+            const url = new URLSearchParams(window.location.search);
+
+            if (url.get('category')) {
+                location.href = window.location.origin + `/sort?category=${url.get('category')}&by=${e.target.id}`;
+            } else {
+                location.href = window.location.origin + `/sort?by=${e.target.id}`;
+            }
+        }
+    })
+
+    document.querySelectorAll('.banner-img span').forEach(elem => {
+        elem.onclick = e => {
+            console.log(e)
+            $('.banner-img span').css({
+                'opacity' : '0.4'
+            })
+
+            e.target.style.opacity = 1;
+
+            let arr = document.querySelector('.banner-txt-container').getElementsByTagName('div');
+            
+            Array.from(arr).forEach(e => e.style.display = 'none');
+            arr[parseInt(e.target.getAttribute('class'))].style.display = 'flex';
+        }
+    })
+</script>

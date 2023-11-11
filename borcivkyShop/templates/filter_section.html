@@ -1,16 +1,33 @@
 <nav>
-    <div id="filter-section" class="header-nav-panel">
-        <ul>
-            <button id="menu-slide">Фільтр</button>
-            <a href="/">
-                <li>Всі Товари</li>
-            </a>
-            <a href="/newProducts">
-                <li>Нові Товари</li>
-            </a>
-            <a href="/discounts">
-                <li>Знижки</li>
-            </a>
-        </ul>
+    <div>
+        <div id="filter-section" class="header-nav-panel">
+            <ul>
+                <button id="menu-slide">Фільтр</button>
+                <a href="/">
+                    <li>Всі Товари</li>
+                </a>
+                <a href="/newProducts">
+                    <li>Нові Товари</li>
+                </a>
+                <a href="/discounts">
+                    <li>Знижки</li>
+                </a>
+            </ul>
+        </div>
+    </div>
+    <div>
+        <div class="sortBy">
+            {% if sort == 'max-sort' %}
+                <span>Сортувати: За спаданням</span>
+            {% elif sort == 'min-sort' %}
+                <span>Сортувати: За зростанням</span>
+            {% else %}
+                <span>Сортувати: - </span>
+            {% endif %}
+            <ul>
+                <li id="max-sort">За спаданням</li>
+                <li id="min-sort">За зростанням</li>
+            </ul>
+        </div>
     </div>
 </nav>

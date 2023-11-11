@@ -5,3 +5,4 @@ Lib/
 Include/
 __pycache__/
 *.db
+*.log

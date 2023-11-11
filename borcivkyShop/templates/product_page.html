@@ -10,6 +10,7 @@
 </head>
 <body>
     {% include 'bckt.html' %}
+    {% include 'scs.html' %}
     <div class="show-order-block noactive">
     <div class="order-block noactive">
         <div class="order-info">
@@ -57,6 +58,17 @@
                 {% include "np_z.html" %}
                 <div class="info-inputs">
                     <input type="text" name="prodcutId" class="noactive">
+                </div>
+                <div class="oplata">
+                    <h1>Виберіть тип оплати</h1>
+                    <div>
+                        {% for op in oplata %}
+                            <span>
+                                <input class="orders-opl-elems" type="radio" name="req" value="{{ op }}">
+                                <label for="nal">{{ op }}</label>
+                            </span>
+                        {% endfor %}
+                    </div>
                 </div>
                 <input class="submit" type="submit" value="Підтвердити замовлення">
             </div>

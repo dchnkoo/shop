@@ -1,0 +1,65 @@
+#success-add-container {
+    z-index: 999;
+
+    display: none;
+    place-content: center;
+
+    transform: scale(0.2);
+
+    height: 100%;
+    width: 100%;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 8px;
+    max-height: 120px;
+    max-width: 120px;
+    position: absolute;
+}
+
+@keyframes sc {
+    from {
+        transform: scale(0);
+    } to {
+        transform: scale(1);
+    }
+}
+
+@keyframes sr {
+    from {
+        transform: scale(1);
+    } to {
+        transform: scale(0);
+        display: none;
+    }
+}
+
+#success-add-container .circle {
+    stroke-dasharray: 260;
+    stroke-dashoffset: 260;
+
+    animation: cr 0.7s ease-in forwards;
+}
+
+@keyframes cr {
+    from {
+        stroke-dashoffset: 260;
+    } to {
+        stroke-dashoffset: 0;
+    }
+}
+
+#success-add-container polyline {
+    stroke-dasharray: 80;
+    stroke-dashoffset: 80;
+    stroke-linecap: round;
+
+    animation: cs 0.4s ease-in forwards 0.6s;
+}
+
+@keyframes cs {
+    from {
+        stroke-dashoffset: 80;
+    } to {
+        stroke-dashoffset: 0;
+    }
+}

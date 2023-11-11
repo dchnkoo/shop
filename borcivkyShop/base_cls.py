@@ -1,6 +1,11 @@
 # база данних для роботи з товарами
 from cs50 import SQL
 import numpy as np  
+import logging
+
+import time
+
+import threading
 
 # дефолт бібліотеки пайтон
 from random import choice
@@ -24,6 +29,24 @@ _Card__sql_query_to_get_minPrice = 'SELECT Ціна2 FROM borcivkyShop WHERE Н�
 _Card__sql_query_to_get_max_price = 'SELECT Ціна2 FROM borcivkyShop WHERE Наявність <> 0 ORDER BY Ціна2 DESC'
 _Card__sql_query_select_category = 'SELECT * FROM borcivkyShop WHERE Категорія=?'
 _Card__sql_query_get_unik_categories = 'SELECT DISTINCT Категорія FROM borcivkyShop'
+
+handler = logging.FileHandler('project.log')
+handler.setFormatter(logging.Formatter('%(levelname)s - %(asctime)s: %(message)s'))
+cls = logging.getLogger('#### base_cls.py ####')
+cls.addHandler(handler)
+
+def check_time(func):
+
+    def wrapper(*args, **kwards):
+        strart_time = time.time()
+        v = func(*args, **kwards)
+        end_time = time.time()
+        cls.info(f'{func.__name__}() ends in {end_time - strart_time} seconds')
+        return v
+
+    return wrapper
+
+
 
 class Card:
     def __init__(self):
@@ -82,14 +105,18 @@ class Card:
         path  = 'static/banner-image'
 
         return path + '/' + choice(os.listdir(path=path))
-
+    
+    @check_time
     def get_database_info_of_cards(self, path, data, category = False, two_image = False):
 
-        categ = self.check_for_space(data['Категорія'])
-        brand = self.check_for_space(data['Бренд'])
-        model = self.check_for_space(data['Модель'].strip())
-        color = self.check_for_space(self.check_for_slash(data['Колір']))
-        name = f"{model}{color}"
+        forCheck = {'categ': data['Категорія'], 'brand': data['Бренд'], 'model': data['Модель'].strip(), 'color': data['Колір']}
+        checker = threading.BoundedSemaphore(value=5)
+        for n in forCheck.keys():
+            checker.acquire()
+            forCheck[n] = self.check_for_space(self.check_for_slash(forCheck[n]))
+            checker.release()
+
+        name = f"{forCheck['model']}{forCheck['color']}"
             
         if data['Знижка'] != 0:
                 data['discountPrice'] = data['Ціна'] - self.calc_discount(data['Знижка'], data['Ціна'])
@@ -103,29 +130,29 @@ class Card:
             категорії
             """ 
             if two_image:
-                photos = self.check_photos_for_page(os.listdir(f'{path}/{brand}/{model}{color}'))
+                photos = self.check_photos_for_page(os.listdir(f'{path}/{forCheck['brand']}/{forCheck['model']}{forCheck['color']}'))
             else:
-                photos = os.listdir(f'{path}/{brand}/{model}{color}')
+                photos = os.listdir(f'{path}/{forCheck['brand']}/{forCheck['model']}{forCheck['color']}')
         else:
             """
             В іншому випадку перебираємо всі фотографії кожного товару
             з всіх категорій
             """
             if two_image:
-                photos = self.check_photos_for_page(os.listdir(f'{path}/{categ}/{brand}/{model}{color}'))
+                photos = self.check_photos_for_page(os.listdir(f'{path}/{forCheck['categ']}/{forCheck['brand']}/{forCheck['model']}{forCheck['color']}'))
             else:
-                photos = os.listdir(f'{path}/{categ}/{brand}/{model}{color}')
+                photos = os.listdir(f'{path}/{forCheck['categ']}/{forCheck['brand']}/{forCheck['model']}{forCheck['color']}')
 
         if category:
 
             data['Розмір'] = data['Розмір'].split(' ')                         
-            data['photos'] = list(map(lambda x: f'{path}/{brand}/{name}/{x}', photos))
+            data['photos'] = list(map(lambda x: f'{path}/{forCheck['brand']}/{name}/{x}', photos))
             return data
         
         else:
 
             data['Розмір'] = data['Розмір'].split(' ') 
-            data['photos'] = list(map(lambda x: f'{path}/{categ}/{brand}/{name}/{x}', photos))
+            data['photos'] = list(map(lambda x: f'{path}/{forCheck['categ']}/{forCheck['brand']}/{name}/{x}', photos))
             return data
 
 
@@ -293,8 +320,32 @@ class Card:
     # calculate methods
     def calc_discount(self, dscnt, price):
         return int(price * (dscnt / 100)) 
+    
+    def get_sort_products(self, sort, category=None):
+        if category:
+            if sort == 'max-sort':
+                query = 'SELECT * FROM borcivkyShop WHERE Категорія=? AND Наявність <> 0 ORDER BY Ціна2 DESC'
+            elif sort == 'min-sort':
+                query = 'SELECT * FROM borcivkyShop WHERE Категорія=? AND Наявність <> 0 ORDER BY Ціна2 ASC'
+            else:
+                return False
+
+            for i in self.__db.execute(query, category):
+                yield self.get_all_by_category(category, i)
+
+        else:
+            if sort == 'max-sort':
+                query = 'SELECT * FROM borcivkyShop WHERE Наявність <> 0 ORDER BY Ціна2 DESC'
+            elif sort == 'min-sort':
+                query = 'SELECT * FROM borcivkyShop WHERE Наявність <> 0 ORDER BY Ціна2 ASC'
+            else:
+                return False
+            
+            for i in self.__db.execute(query):
+                yield self.get_all_product(i)
 
 
+    @check_time
     def getProducts_database(self, pricemin=None, pricemax=None, category=None, random = 0, limitation=0):
         if category:
             lim = 0
@@ -354,10 +405,10 @@ class Orders:
     def __init__(self):
         self.__db = db
 
-    def insert_order(self, count, **kwards):
+    def insert_order(self, **kwards):
 
         self.__db.execute(insert_order_information, 
                           kwards['orderId'], kwards['idProduct'],
-                          kwards['size'], kwards['name'], kwards['secondName'],
+                          kwards['ordersize'], kwards['userName'], kwards['secondName'],
                           kwards['userPhone'], kwards['userEmail'], kwards['City'], kwards['vidil'],
-                          kwards['opl'], kwards['time'], count)
+                          kwards['opls'], kwards['time'], kwards['value'])

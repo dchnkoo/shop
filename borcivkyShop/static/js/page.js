@@ -4,7 +4,7 @@ const getDate = new Date();
 const LCSTORAGE = 'user_trash';
 
 let setPosition;
-let cardSetter = 11;
+let cardSetter = 8;
 
 
 class Cards {
@@ -20,7 +20,7 @@ class Cards {
         ) : null;
     }
 
-    #baseUrl(url) {
+    baseUrl(url) {
         return window.location.origin + url;
     }
 
@@ -30,17 +30,21 @@ class Cards {
 
         e.target.id !== null ? (
             getObj = cards.filter(v => (v.idProduct === e.target.id))[0],
-            location.href = this.#baseUrl(`/ProductPage?id=${getObj.idProduct}&imgUrl=${getObj.image}&price=${getObj.price}&discount=${getObj.discount}&name=${getObj.name}&sizes=${getObj.sizes}`)
+            location.href = this.baseUrl(`/ProductPage?id=${getObj.idProduct}&imgUrl=${getObj.image}&price=${getObj.price}&discount=${getObj.discount}&name=${getObj.name}&sizes=${getObj.sizes}`)
         ) :
-            location.href = this.#baseUrl('/');
+            location.href = this.baseUrl('/');
     }
 
     showMoreBtn() {
-        cardSetter = cardSetter + 10;
+        cardSetter = cardSetter + 9;
 
         $('.cards-con-cont').each((index, element) => {
-            index < cardSetter && element.getAttribute('class') === 'cards-con-cont noactive' ? 
-                element.setAttribute('class', 'cards-con-cont') : $('.more-cards').css({'display' : 'none'})
+            let arr = Array.from($('.cards-con-cont'));
+            if (index <= cardSetter && element.getAttribute('class') === 'cards-con-cont noactive') {
+                element.setAttribute('class', 'cards-con-cont');
+            } else if (arr.indexOf(arr[arr.length - 1]) <= cardSetter) {
+                $('.more-cards').css({'display' : 'none'})
+            }
         })
     }
 
@@ -177,6 +181,23 @@ function setSizes(obj) {
 
 }
 
+function scAdd() {
+    let elem = document.getElementById('success-add-container');
+    elem.style.animation = 'sc 0.2s ease-in forwards'
+
+    elem.style.top = (scrollY + 200) + 'px';
+
+    
+    elem.style.display = 'grid';
+    setTimeout(setNone, 1800, ['#success-add-container'])
+}
+
+function setNone($selector) {
+    let elem = document.querySelector($selector);
+
+    elem.style.animation = 'sr 0.2s ease-in forwards';
+}
+
 
 function showOrderWindow(obj) {
     let getOrederWindow = document.querySelector('.show-order-block');
@@ -290,7 +311,7 @@ function closeOrderWindow() {
         if (elem.classList.contains('op-animation')) {
             elem.classList.remove('op-animation');
     
-            document.querySelector('.succes-order').style.display = 'none';
+            Array.from(document.querySelectorAll('.succes-order')).forEach(elem => elem.style.display = 'none')
         }
 
     });
@@ -314,6 +335,7 @@ function sumBcktPrice() {
     if (orders.length < 1) {
         document.querySelector('.total-sum span.sum').innerHTML = 0;
         document.getElementById('counter-cards').style.display = 'none';
+        document.querySelector('.total-sum').style.display = 'none';
     } else {
         document.getElementById('counter-cards').innerText = orders.length;
         document.getElementById('counter-cards').style.display = 'flex';
@@ -323,21 +345,26 @@ function sumBcktPrice() {
 }
 
 function checkLocalStorage() {
-    let getObjects = JSON.parse(localStorage.getItem(LCSTORAGE));
-
-    if (getObjects) {
-        for (let obj in getObjects) {
-            appendToBckt(proxyObjCreator(getObjects[obj], {
-                set(t, p, v) {
-                    if (p === 'value') {
-                        t[p] = v
-                    } else {
-                        throw new Error('....shhhh');
-                        
+    try {
+        let getObjects = JSON.parse(localStorage.getItem(LCSTORAGE));
+    
+        if (getObjects) {
+            for (let obj in getObjects) {
+                appendToBckt(proxyObjCreator(getObjects[obj], {
+                    set(t, p, v) {
+                        if (p === 'value') {
+                            t[p] = v
+                        } else {
+                            throw new Error('....shhhh');
+                            
+                        }
                     }
-                }
-            }))
+                }))
+            }
         }
+
+    } catch {
+        console.log('Trash empty')
     }
 }
 
@@ -358,6 +385,7 @@ function appendToBckt(obj) {
             document.querySelector('.bckt-orders .empty').style.display = 'none'
             document.querySelector('.go-form-btn-order').style.display = 'block'
             document.querySelector('.total-sum').style.display = 'block';
+            document.querySelector('.btn-container').style.display = 'block';
         }
         
         sumBcktPrice()
@@ -401,6 +429,17 @@ function setOrdersClose() {
     $('.products-bckt-window').css('display', 'none');
     $('.products-bckt .form-order').css('display', 'none');
     $('.btn-container').css('display', 'block');
+
+    document.querySelectorAll('.order-form').forEach(elem => elem.classList.remove('op-animation'));
+    document.querySelectorAll('.succes-order').forEach(elem => elem.style.display = 'none');
+
+    let ord = document.querySelector('.bckt-orders');
+    let get = ord.getElementsByTagName('div');
+
+    if (get.length < 2) {
+        ord.parentElement.querySelector('.btn-container').style.display = 'none';
+        ord.parentElement.querySelector('.empty').style.display = 'flex';
+    }
 }
 
 const proxyObjCreator = (target, handler) => new Proxy(target, handler)
@@ -426,7 +465,6 @@ window.onload = () => {
     $('#menu-slide').click(() => $('#slide-menu').removeClass('disable').addClass('active'))
     $('#crosser').click(() => $('#slide-menu').removeClass('active').addClass('disable'))
     
-
 
     setInterval(getScroll, 500);
 
@@ -566,6 +604,7 @@ window.onload = () => {
             }));
 
             closeOrderWindow()
+            scAdd()
         } else if (!document.querySelector('.invalid-size')) {
             $('.order-templates-container').append('<span class="invalid-size">Для додавання товару в корзину оберіть розмір</span>');
         } else {

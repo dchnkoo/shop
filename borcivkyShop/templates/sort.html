@@ -6,15 +6,21 @@
     <meta name="description" content="Інтернет магазин спортивних товарів та одягу для боксу та боротьби. Доставка по всій Україні ">
     <meta name="keywords" content="Придбати борцівки онлайн, купити боксерки в інтернеті, боксерки купити, спортивний одяг в інтернет магазині, спортивні костюми, взуття купити онлайн">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Нові товари - BORCIVKY UKRAINE</title>
+    {% if sort == 'max-sort' %}
+        <title>Сортування товарів за спаданням - BORCIVKY UKRAINE</title>
+    {% elif sort == 'min-sort' %}
+        <title>Сортування товарів за зростанням - BORCIVKY UKRAINE</title>
+    {% else %}
+        <title>Інтернет магазин - BORCIVKY UKRAINE</title>
+    {% endif %}
     {% include 'styles.html' %}
     <link rel="stylesheet" href="{{ url_for('static', filename='new_product_page.css') }}">
 </head>
 <body>
     {% include 'header.html' %}
-    {% include 'scs.html' %}
-    {% include 'show_order_block.html' %}
 
+    {% include 'show_order_block.html' %}
+    {% include 'scs.html' %}
     {% include 'bckt.html' %}
     <div class="page-container">
         
@@ -34,7 +40,7 @@
                     <div class="product-cards-con">
                         <div class="product-cards-container">
                             {% block productcards %}
-                                {% for elem in newProductsPage() %}
+                                {% for elem in get_sort %}
                                     {% include 'card.html' %}
                                 {% endfor %}
                             {% endblock %}

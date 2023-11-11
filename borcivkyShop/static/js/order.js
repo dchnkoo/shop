@@ -1,5 +1,5 @@
-function getName() {
-    let getName = Array.from(document.querySelectorAll(".userName")).filter(elem => {
+function getValueOrder($selector) {
+    let getName = Array.from(document.querySelectorAll($selector)).filter(elem => {
         let name = elem.querySelector('input');
         if (name.value.length >= 1) {
             return name.value;
@@ -13,57 +13,8 @@ function getName() {
     }
 }
 
-function getSecondName() {
-    let get = Array.from(document.querySelectorAll('.userSecondName')).filter(elem => {
-        let second = elem.querySelector('input');
-
-        if (second.value.length >= 1) {
-            return second.value;
-        }
-    })[0];
-
-    try {
-        return {secondName: get.querySelector('input').value, elem: get}
-    } catch {
-
-    }
-}
-
-function getPhone() {
-    let get = Array.from(document.querySelectorAll('.userPhone')).filter(elem => {
-        let phone = elem.querySelector('input');
-
-        if (phone.value.length >= 1) {
-            return phone.value;
-        }
-    })[0];
-
-    try {
-        return {phone: get.querySelector('input').value, elem: get};
-
-    } catch {
-
-    }
-}
-
-function getEmail() {
-    let get = Array.from(document.querySelectorAll('.userEmail')).filter(elem => {
-        let email = elem.querySelector('input');
-
-        if (email.value.length >= 1) {
-            return email.value;
-        }
-    })[0];
-
-    try {
-        return {email: get.querySelector('input').value, elem: get};
-    } catch {
-
-    }
-}
-
-function getCityUser() {
-    let get = Array.from(document.querySelectorAll('#choose-city-input')).filter(elem => {
+function getCityUser($selector) {
+    let get = Array.from(document.querySelectorAll($selector)).filter(elem => {
         if (elem.value.length >= 1) {
             return elem.value;
         }
@@ -72,7 +23,7 @@ function getCityUser() {
     try {
         return {city: get.value, elem: get}
     } catch {
-        document.querySelectorAll('#choose-city-input').forEach(elem => {
+        document.querySelectorAll($selector).forEach(elem => {
             if (document.querySelectorAll('.invalid-city').length < 1) {
                 let p = document.createElement('p');
             
@@ -90,8 +41,8 @@ function getCityUser() {
     }
 }
 
-function getVidilUser() {
-    let get = Array.from(document.querySelectorAll('#choose-vid-input')).filter(elem => {
+function getVidilUser($selector) {
+    let get = Array.from(document.querySelectorAll($selector)).filter(elem => {
         if (elem.value.length >= 1) {
             return elem.value;
         }
@@ -100,7 +51,7 @@ function getVidilUser() {
     try {
         return {vidil: get.value, elem: get}
     } catch {
-        document.querySelectorAll('#choose-vid-input').forEach(elem => {
+        document.querySelectorAll($selector).forEach(elem => {
             if (document.querySelectorAll('.invalid-vid').length < 1) {
                 let p = document.createElement('p');
             
@@ -120,15 +71,14 @@ function getVidilUser() {
 
 
 
-function getOpl() {
-    let getObjects = Array.from(document.querySelectorAll('.orders-opl-elems')).filter(
-        elem => elem.getAttributeNames().includes('data'))[0];
-        
+function getOpl($selector, $sele) {
+    let getObjects = Array.from(document.querySelectorAll($selector)).filter(
+        elem => elem.getAttributeNames().includes('data'))[0]
         
     try {
         return {opl: getObjects.value, elem: getObjects};
     } catch {
-        Array.from(document.querySelectorAll('.oplata')).forEach(elem => {
+        Array.from(document.querySelectorAll($sele)).forEach(elem => {
             let span = document.createElement('span');
 
             span.setAttribute('class', 'invalid-opl');
@@ -145,12 +95,12 @@ function getOpl() {
     }
 }
 
-$('.oplata input').click(elem => {
+$('.oplata input, .oplatab input').click(elem => {
     if (document.querySelectorAll('.invalid-opl')) {
         document.querySelectorAll('.invalid-opl').forEach(elem => elem.remove())
     }
 
-    $('.oplata input').removeAttr('data');
+    $('.oplata input, .oplatab input').removeAttr('data');
     
     elem.target.setAttribute('data', 'checked');
 })
@@ -185,27 +135,86 @@ function nameError(name, value, clas) {
     }
 }
 
-$('.submit-bckt').click(sendObject);
-function sendObject(e) {
-    getData(e, orders)
+function formsReset(e) {
+    document.querySelector('.userName').querySelector('input').value = '';
+    document.querySelector('.userNameb').querySelector('input').value = '';
+    document.querySelector('.userSecondName').querySelector('input').value = '';
+    document.querySelector('.userSecondNameb').querySelector('input').value = '';
+    document.querySelector('.userPhoneb').querySelector('input').value = '';
+    document.querySelector('.userPhone').querySelector('input').value = '';
+    document.querySelector('.userEmail').querySelector('input').value = '';
+    document.querySelector('.userEmailb').querySelector('input').value = '';
+    document.querySelectorAll('#choose-city-input').forEach(elem => elem.value = '')
+    document.querySelectorAll('#choose-vid-input').forEach(elem => {elem.value = ''; elem.style.display = 'none'})
+    document.querySelectorAll('#choose-vid').forEach(elem => elem.style.display = 'none')
+
+    let ord = document.querySelector('.bckt-orders');
+    let get = Array.from(ord.getElementsByTagName('div'));
+
+    if (e.target.getAttribute('class') === 'submit-bckt') {
+        if (get.length > 1) {
+            get.forEach(elem => {
+                if (elem.classList.contains('order')) {
+                    elem.remove()
+                }
+            })
+            orders.length = 0;
+            localStorage.setItem(LCSTORAGE, '[]')
+            sumBcktPrice();
+        }
+    }
 }
 
-$('.form .submit, .forms .submit').click(getData);
+
+$('.submit-bckt').click(bData);
+
+function bData(e) {
+    getData(e, orders,'.userNameb', '.userSecondNameb', '.userPhoneb',
+            '.userEmailb', '#choose-city-input', '#choose-vid-input', ['.orders-opl-elemsb', '.oplatab'], '.submit-bckt')
+}
+
+$('.form .submit').click(sData);
 
 
-function getData(e,obj) {
+function sData(e) {
+    getData(e, null, '.userName', '.userSecondName', '.userPhone',
+            '.userEmail', '#choose-city-input', '#choose-vid-input', ['.orders-opl-elems', '.oplata'], '.form .submit')
+}
+
+$('.forms .submit').click(hData)
+function hData(e) {
+    getData(e, null, '.userName', '.userSecondName', '.userPhone',
+            '.userEmail', '#choose-city-input', '#choose-vid-input', ['.orders-opl-elems', '.oplata'], '.forms .submit')
+}
+
+function disabledBtn($selector, undisable = false) {
+    if (undisable) {
+        document.querySelector($selector).removeAttribute('disabled')
+    } else {
+        document.querySelector($selector).setAttribute('disabled', 'disabled');
+    }
+
+}
+
+
+function getData(e, obj, $name, $secName, $phone, $email, $city, $vidil, opl, btn) {
     const form = new FormData()
+
     
     const regName = '^[^0-9-_~`₴!@"\'№#$%^\{\}:;&?*()+=\\\\/,<>. ]*$';
     const phoneReg = '^(\\+38|38)?(039|050|063|066|067|068|073|089|091|092|093|094|095|096|097|098|099)([0-9]{7})$';
     // const emailRegxp = new RegExp('^([\\w0-9_-]+)([\\.\\w0-9_-]+)?@(\\w+)\\.(\\w{2,})(\\.\\w{2,})?$')
     const emailRegp = '^(\\w+)\\.?((\\w+|\\w+\\.\\w+(\\.\\w+)?))?@([a-zA-Z]+)\\.([a-zA-Z]{2,})(\\.[a-zA-Z]{2,})?$'
     
+
+
     try {
+        disabledBtn(btn)
         new Promise((r, j) => {
-            const name = getName();
+            const name = getValueOrder($name);
             if (name.name.match(regName)) {
-                r(name.name);
+                let userName = name.name
+                r(userName);
             } else {
                 j(name.elem)
             }
@@ -216,9 +225,9 @@ function getData(e,obj) {
         })
         .then(userName => {
             return new Promise((r, j) => {
-                const secondName = getSecondName();
-                if (secondName.secondName.match(regName)) {
-                    r({name: userName, secondName: secondName.secondName});
+                const secondName = getValueOrder($secName);
+                if (secondName.name.match(regName)) {
+                    r({userName: userName, secondName: secondName.name});
                 } else {
                     j(secondName.elem)
                 }
@@ -230,9 +239,9 @@ function getData(e,obj) {
         })
         .then(value => {
             return new Promise((r, j) => {
-                const phone = getPhone() 
-                if (phone.phone.match(phoneReg)) {
-                    let userPhone = phone.phone;
+                const phone = getValueOrder($phone) 
+                if (phone.name.match(phoneReg)) {
+                    let userPhone = phone.name;
                     r({...value, userPhone});
                 } else {
                     j(phone.elem)
@@ -245,9 +254,9 @@ function getData(e,obj) {
         })
         .then(obj => {
             return new Promise((r, j) => {
-                const email = getEmail()
-                if (email.email.match(emailRegp)) {
-                    let userEmail = email.email;
+                const email = getValueOrder($email)
+                if (email.name.match(emailRegp)) {
+                    let userEmail = email.name;
                     r({...obj, userEmail});
                 } else {
                     j(email.elem);
@@ -258,14 +267,18 @@ function getData(e,obj) {
             nameError(error, 'Неправильний формат електроноЇ пошти. Приклад nospace@between.mailids.in', 'invalid-email');
             throw new Error(error);
         })
-        .then(obj => {
+        .then(object => {
             return new Promise((r, j) => {
-                try{
-                    let size = document.querySelector('.active-size').innerHTML;;
-
-                    r({...obj, size})
-                } catch {
-                    j(document.querySelector('.sizes > div'))
+                if (obj) {
+                    r({...object, ...obj})
+                } else {
+                    try{
+                        let ordersize = document.querySelector('.active-size').innerHTML;;
+    
+                        r({...object, ordersize})
+                    } catch {
+                        j(document.querySelector('.sizes > div'))
+                    }
                 }
             })       
         })
@@ -275,7 +288,7 @@ function getData(e,obj) {
         })
         .then(data => {
             return new Promise((r, j) => {
-                const getCity = getCityUser();
+                const getCity = getCityUser($city);
                 if (getCity !== undefined) {
                     let City = getCity.city 
                     r({...data, City})
@@ -289,7 +302,7 @@ function getData(e,obj) {
         })
         .then(data => {
             return new Promise((r, j) => {
-                const getVidil = getVidilUser();
+                const getVidil = getVidilUser($vidil);
                 if (getVidil !== undefined) {
                     let vidil = getVidil.vidil;
                     r({...data, vidil});
@@ -302,10 +315,10 @@ function getData(e,obj) {
         })
         .then(data => {
             return new Promise((r, j) => {
-                const getoplata = getOpl();
+                const getoplata = getOpl(...opl);
                 if (getoplata) {
-                    let opl = getoplata.opl
-                    r({...data, opl})
+                    let opls = getoplata.opl
+                    r({...data, opls})
                 } else {
                     j('oplata error')
                 }
@@ -315,35 +328,36 @@ function getData(e,obj) {
             throw new Error(error);
         })
         .then(data => {
-            console.log(obj)
-            if (obj) {
-                form.append('data', JSON.stringify({...data, ...obj}))
-                sendData(form)
+            if (obj !== null) {
+                let ord = []
+                obj.forEach(elem => ord.push({...data, ...elem}))
+
+                form.append('data', JSON.stringify(ord))
+                sendData(form, e, btn)
             } else {
                 try {
                     let idProduct = document.querySelector('.form').querySelector('.info-inputs').querySelector('input').value;
                     let value = 1
-                    let object = [{...data, idProduct, value}] 
+                    let object = [{...data, idProduct, value}]
                     form.append('data', JSON.stringify(object));
-                    sendData(form)
+                    sendData(form, e, btn)
                     
                 } catch {
-    
                     let idProduct = document.querySelector('.forms').querySelector('.info-inputs').querySelector('input').value;
                     let value = 1
                     let obj = [{...data, idProduct, value}] 
                     form.append('data', JSON.stringify(obj));
-                    sendData(form)
+                    sendData(form, e, btn)
                 }    
             }
-        })
+    })
     } catch {
 
     }
 }
 
 
-function sendData(form) {
+function sendData(form, e, b) {
     fetch(
         '/fastOrder', {
             'method' : 'POST',
@@ -356,10 +370,12 @@ function sendData(form) {
             elem.classList.add('op-animation'); 
         });
 
+        disabledBtn(b, true)
+        formsReset(e);
         setTimeout(succesTime, 1000)
     })
 }
 
 function succesTime() {
-    document.querySelector('.succes-order').style.display = 'block';
+    document.querySelectorAll('.succes-order').forEach(elem => elem.style.display = 'block')
 }

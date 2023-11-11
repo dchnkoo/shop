@@ -236,5 +236,4 @@ input[type='radio']:not(input[name='req']) {
 
 footer .cards-con-cont {
     height: 100%;
-    width: clamp(18rem, 60%, 30rem);
 }

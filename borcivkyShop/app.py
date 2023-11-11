@@ -5,6 +5,8 @@ from flask.globals import request_ctx
 from random import randint
 import time
 
+from concurrent.futures import ThreadPoolExecutor
+
 from base_cls import Card, Orders
 card = Card()
 orders = Orders()
@@ -21,7 +23,6 @@ app.config['MAIL_USERNAME'] = 'dmshop1307@gmail.com'
 app.config['MAIL_PASSWORD'] = 'frsu zwst uqxz aotm'
 
 mail = Mail(app)
-
 
 def send_mail(email, orderid, city, warhouse):
     msg = Message(
@@ -55,11 +56,26 @@ def get_user_IP():
 @app.route('/')
 def home_page():
     print(get_user_IP())
-    return render_template('home.html', 
-                           get_categories=card.get_categories,
-                           image=card.random_image_for_banner, 
-                           min=card.min_price,  max=card.max_price,all_products=card.getProducts_database,
-                           foot_category=card.categories_for_footer, oplata=oplata_methods)
+
+    d = {
+        'get_categories': card.get_categories,
+        'image': card.random_image_for_banner,
+        'min': card.min_price,
+        'max': card.max_price,
+        'all_products': card.getProducts_database,
+        'foot_category': card.categories_for_footer,
+    }
+
+    with ThreadPoolExecutor() as executor:
+
+        for n in d.keys():
+            d[n] = executor.submit(d[n])
+
+        return render_template('home.html', 
+                            get_categories=d['get_categories'].result,
+                            image=d['image'].result, 
+                            min=d['min'].result,  max=d['max'].result, all_products=d['all_products'].result,
+                            foot_category=d['foot_category'].result, oplata=oplata_methods)
 
 
 # search.html
@@ -79,6 +95,9 @@ def search():
             return redirect(get_domain())
 
         else:
+
+            
+
             return render_template('search.html',
                                     get_categories=card.get_categories,
                                     foot_category=card.categories_for_footer,
@@ -93,41 +112,64 @@ def search():
         return redirect(get_domain())
 
 
+
+@app.route('/sort')
+def sort():
+    sort = request.args.get('by')
+    if request.args.get('category'):
+        categ = request.args.get('category')
+
+        return render_template('sort.html', get_sort=card.get_sort_products(sort, categ),
+                                get_categories=card.get_categories,
+                                foot_category=card.categories_for_footer,
+                                min=card.min_price,  max=card.max_price, 
+                                image=card.random_image_for_banner,
+                                oplata=oplata_methods, sort=sort)
+    else:
+        return render_template('sort.html', get_sort=card.get_sort_products(sort),
+                                get_categories=card.get_categories,
+                                foot_category=card.categories_for_footer,
+                                min=card.min_price,  max=card.max_price, 
+                                image=card.random_image_for_banner,
+                                oplata=oplata_methods, sort=sort)
+
+
+
+
 # Коли користувач заповнив форму замовлення 
 # данні надсилаються сюди
 @app.route('/fastOrder', methods=['POST'])
 def fastForm():
+        datas = json.loads(request.form['data'])
+
         try:
-            data = json.loads(request.form['data'])
+            for d in datas:
+                if not card.check_id_database(int(d['idProduct'])):
+                    return app.response_class(
+                        response=json.dumps({"status":"Bad Request","code":400}),
+                        status=400,
+                        mimetype='application/json')
+                else:
+                    orderId = randint(1_000_000, 9_000_000)
+                    d['orderId'] = orderId
+                    d['time'] = time.strftime('%d.%m.%Y %H:%M:%S', time.localtime(time.time())) 
+                    print(d)
+                    orders.insert_order(**d)
 
-            if card.check_id_database(int(data['idProduct'])):
-                orderId = randint(1_000_000, 9_000_000)
-                data['orderId'] = orderId
-                data['time'] = time.strftime('%d.%m.%Y %H:%M:%S', time.localtime(time.time()))      
-                print(data)
-
-                orders.insert_order(data)
+                    send_mail(d['userEmail'], d['orderId'], d['City'], d['vidil']) 
                 
-                send_mail(data['userEmail'], data['orderId'], data['City'], data['vidil'])
-               
-
-                return app.response_class(
-                    response=json.dumps({"status":"success","code":200}),
-                    status=200,
-                    mimetype='application/json'
-                )
-            else: 
-                return app.response_class(
-                    response=json.dumps({"status":"Bad Request","code":400}),
-                    status=400,
-                    mimetype='application/json'
-                )
         except:
             return app.response_class(
-                    response=json.dumps({"status":"Bad Request","code":400}),
-                    status=400,
-                    mimetype='application/json'
-                )
+                        response=json.dumps({"status":"Bad Request","code":400}),
+                        status=400,
+                        mimetype='application/json')
+        else:   
+        
+            return app.response_class(
+                response=json.dumps({"status":"success","code":200}),
+                status=200,
+                mimetype='application/json'
+            )
 
 
 # product_page.html 
@@ -179,5 +221,3 @@ def infoPage():
 """ /////////////////////// Якщо дебюжим в цьому документі запускається локальний сервер ////////////////////////// """
 if __name__ == '__main__':
     app.run(debug=True, host=('0.0.0.0'), port=80)
-
-# send_mail('valera.dchn@gmail.com', '323232', 'Київ', '113')
