@@ -1,3 +1,18 @@
+html body .page-container {
+    opacity: 0;
+    animation: shh 0.2s forwards ease-in 0.3s;
+}
+
+
+@keyframes shh {
+    from {
+        opacity: 0;
+    } to {
+        opacity: 1;
+    }
+}
+
+
 .product-page-container {
     display: flex;
 
@@ -8,12 +23,15 @@
     display: flex;
     flex-flow: column nowrap;
     justify-content: space-between;
+    width: 100%;
 }
 
 .product-page-image-container {
     display: flex;
     flex-flow: column nowrap;
     justify-content: space-between;
+
+    min-height: 310px;
 }
 
 .product-page-images {

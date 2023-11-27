@@ -1,0 +1,114 @@
+
+{% macro form(btn, btntxt, ptext, ctxt, categ, brand, btxt, br='', ct='', m='', k='', p='', s='', much='', area='', title = '') %}
+    <div id="add-product" class="put-product-container">
+
+        {% if title != '' %}
+            <h1>Додати товар</h1>
+        {% endif %}
+        
+        <div>
+            <div class="images">
+                <h2>Додати фото до товару</h2>
+                <div class="title-image-container">
+                    <p>{{ ptext }}</p>
+                    <label id="title"><input type="file" name="title-image" id="title-image" accept=".png, .jpg, .jpeg" required>image 
+                        <svg viewbox="0 0 20 20" width="20" height="21.6">
+                            <polyline stroke="#fff" stroke-width="2" fill="#fff" points="8,3 8,13 4,13 10,20 16,13 12,13 12,3 7,3"></polyline>
+                        </svg>
+                    </label>
+                </div>
+                <button id="reset">Скинути всі фото</button>
+                <p style="color: red;font-weight:bold;">Допустимі формати *.png, *.jpg, *.jpeg</p>
+            </div>
+            <div class="show-images"></div>
+        </div>
+
+        <div>
+            <div>
+                <h2>Категорія товару</h2>
+                <div class="select-category">
+                    <ul>
+                        <li id="select" class="active">{{ ctxt }}</li>
+                        <li id="custom">Додати нову категорію</li>
+                        <span></span>
+                    </ul>
+                </div>
+                <div id="select-category">
+                    {% if ct != '' %}
+                        <input value="{{ ct }}" list="categories" id="category" placeholder="Вибрати категорію...">
+                    {% else %}
+                        <input list="categories" id="category" placeholder="Вибрати категорію...">
+                    {% endif %}
+                    <datalist id="categories">
+                        {% for c in categ() %}
+                            <option value="{{c['Категорія']}}">{{c['Категорія']}}</option>
+                        {% endfor %}
+                    </datalist>
+                </div>
+                <div id="add-custom" class="noactive">
+                    <input type="text" id="category" placeholder="Назва категорії">
+                </div>
+            </div>
+            
+            <div>
+                <h2>Бренд товару <p style="color: red; font-weight:bold; font-size:1rem;display:inline;">Показується в імені товару на сайті</p></h2>
+                <div class="select-brand">
+                    <ul>
+                        <li id="select" class="active">{{ btxt }}</li>
+                        <li id="custom">Додати новий бренд</li>
+                        <span></span>
+                    </ul>
+                </div>
+                <div id="select-brand-container">
+                    {% if br != '' %}
+                        <input value="{{ br }}" list="brands-s" id="brands" placeholder="Вибрати бренд...">
+                    {% else %}
+                        <input list="brands-s" id="brands" placeholder="Вибрати бренд...">
+                    {% endif %}
+                    <datalist id="brands-s">
+                        {% for c in brand() %}
+                            <option value="{{c['Бренд']}}">{{c['Бренд']}}</option>
+                        {% endfor %}
+                    </datalist>
+                </div>
+                <div id="add-custom-brand" class="noactive">
+                    <input type="text" id="brands" placeholder="Назва бренду">
+                </div>
+            </div>
+
+            <div>
+                <div>
+                    <label for="model">Модель товару</label>
+                    <p style="color: red; font-weight:bold;">Показується в імені товару на сайті</p>
+                    <input value="{{ m }}" id="model" name="model" type="text" placeholder="Вкажіть модель..">
+                </div>
+                <div>
+                    <label for="color">Колір товару</label>
+                    <p style="color: red; font-weight:bold;">Показується в імені товару на сайті</p>
+                    <input value="{{ k }}" id="color" name="color" type="text" placeholder="Вкажіть колір..">
+                </div>
+                <div>
+                    <label for="price">Ціна товару</label>
+                    <input value="{{ p }}" id="price" name="price" type="text" placeholder="Вкажіть ціну..">
+                </div>
+                <div>
+                    <label for="sizes">Розміри товару</label>
+                    <p style="color: red; font-weight:bold;">Всі наявні розміри товару потрібно вказувати через пробіл</p>
+                    <input value="{{ s }}" id="sizes" name="sizes" type="text" placeholder="S M L XL XXL...">
+                </div>
+                <div>
+                    <label for="much">Кількість товару</label>
+                    <input value="{{ much }}" id="much" name="much" type="text" placeholder="Вкажіть кількість..">
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <h2>Опис товару</h2>
+            <textarea name="description" id="description" cols="100" rows="10">{{ area }}</textarea>
+        </div>
+
+
+        <button id="{{ btn }}">{{ btntxt }}</button>
+    </div>
+{% endmacro %}

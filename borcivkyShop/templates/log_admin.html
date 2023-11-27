@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель адміністратора - BORCIVKY UKRAINE</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='la.css') }}">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="log-container">
+        <div class="log">
+            <div class="title">
+                <h1>Вхід</h1>
+            </div>
+            <div class="login">
+                <label for="logs">Логін</label>
+                <input type="text" id="logs" name="logs" required autofocus>
+                <svg>
+                    <line x1="0" y1="100%" x2="100%" y2="100%"/>
+                    <line stroke-dasharray="150%" class="offsets" x1="100%" y1="0" x2="0" y2="0"/>
+                    <line x1="0" y1="100%" x2="0" y2="0"/>
+                    <line x1="100%" y1="100%" x2="100%" y2="0"/>
+                </svg>
+            </div>
+            <div class="pass">
+                <label for="passw">Пароль</label>
+                <input type="password" id="passw" name="passw" required>
+                <svg>
+                    <line x1="0" y1="100%" x2="100%" y2="100%"/>
+                    <line stroke-dasharray="150%" class="offsets" x1="100%" y1="0" x2="0" y2="0"/>
+                    <line x1="0" y1="100%" x2="0" y2="0"/>
+                    <line x1="100%" y1="100%" x2="100%" y2="0"/>
+                </svg>
+            </div>
+            <div class="btn-sub">
+                <button>Підтвердити</button>
+            </div>
+        </div>
+    </div>
+    <script>
+
+        function setA($el) {
+            let get = document.querySelector($el);
+            get.querySelector('input').onfocus = e => {
+                get.querySelector('label').style.animation = 'll 0.3s forwards ease-in';
+                if (window.innerWidth > 1024) {
+                    get.querySelector('.offsets').style.strokeDashoffset = '30%';
+                } else {
+                    get.querySelector('.offsets').style.strokeDashoffset = '45%';
+
+                }
+            }
+            get.querySelector('input').onblur = e => {
+                if (get.querySelector('input').value.length < 1) {
+                    get.querySelector('label').style.animation = 'lu 0.3s forwards ease-in';
+                    get.querySelector('.offsets').style.strokeDashoffset = 0;
+                }
+            }
+        }
+
+        setA('.login')
+        setA('.pass')
+
+
+        document.querySelector('.btn-sub button').onclick = e => {
+            return new Promise((r, j) => {
+                let login = document.querySelector('.login input').value;
+                r(login);
+            })
+            .then(login => {
+                return new Promise((r, j) => {
+                    let pass = document.querySelector('.pass input').value;
+                    r({login, pass})
+                })
+            })
+            .then(data => {
+                const form = new FormData()
+
+                form.append('data', JSON.stringify(data))
+
+                fetch('admin/login', {
+                        'method' : 'POST',
+                        'body' : form
+                })
+                .then(data => data.json())
+                .then(d => {
+                    if (d.code === 200) {
+                        location.href = d.url;
+                    } else if (d.code === 400) {
+                        const p = document.createElement('p');
+                        p.innerText = 'Хибний логін або пароль';
+                        p.style.color = '#ff0000';
+                        p.style.fontWeight = 'bold';
+
+                        const div = document.querySelector('div.log');
+
+                        if (!div.querySelector('p')) {
+                            div.insertBefore(p, div.querySelector('.btn-sub'));
+                        }
+                    }
+                })
+            })
+        }
+    </script>
+</body>
+</html>

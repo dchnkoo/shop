@@ -7,15 +7,25 @@
                 <span class="abs">
                     <div class="card-image-container">
                         <div class="card-image">
-                            {% for img in elem['photos'] %}
-                                <img id="{{ elem['id'] }}" src="{{ img }}" alt="{{ img }}">
-                            {% endfor %}
+                            {% if elem['photos']|length == 1 %}
+                                {% for el in elem['photos'] %}
+                                    <img class='title activated' id="{{ elem['id'] }}" src="{{ el[1] }}" alt="{{ el[1] }}">
+                                {% endfor %}
+                            {% else %}
+                                {% for img in elem['photos'] %}
+                                    {% if img[0] <= 7 %}
+                                        <img class='title activated_opacity' id="{{ elem['id'] }}" src="{{ img[1] }}" alt="{{ img[1] }}">
+                                    {% elif img[0] == 8 %}
+                                        <img class='title_two opacity' id="{{ elem['id'] }}" src="{{ img[1] }}" alt="{{ img[1] }}">
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
                         </div>
                     </div>
                     <div class="section-card">
                         <div class="card-name-and-buybtn">
                             <span id="nm-pr-con">
-                                <a id="{{ elem['id'] }}" class="card-name">{{ elem['Бренд'] + ' ' + elem['Модель'] + ' ' + elem['Колір']}}</a>
+                                <a class="card-name"><abbr id="{{ elem['id'] }}" title="{{ elem['Бренд'] + ' ' + elem['Модель'] + ' ' + elem['Колір']}}">{{ elem['Бренд'] + ' ' + elem['Модель'] + ' ' + elem['Колір']}}</abbr></a>
                                 <span class="card-price">{{ elem['Ціна'] }} &#8372;</span>
                             </span>
                             <!-- <button id="buybtn"><img src="static/icons/buybtn.png"></button> -->
@@ -46,15 +56,25 @@
                 <span class="abs">
                     <div class="card-image-container">
                         <div class="card-image">
-                            {% for img in elem['photos'] %}
-                                <img id="{{ elem['id'] }}" src="{{ img }}" alt="{{ img }}">
-                            {% endfor %}
+                            {% if elem['photos']|length == 1 %}
+                                {% for el in elem['photos'] %}
+                                    <img class='title activated' id="{{ elem['id'] }}" src="{{ el[1] }}" alt="{{ el[1] }}">
+                                {% endfor %}
+                            {% else %}
+                                {% for img in elem['photos'] %}
+                                    {% if img[0] <= 7 %}
+                                        <img class='title activated_opacity' id="{{ elem['id'] }}" src="{{ img[1] }}" alt="{{ img[1] }}">
+                                    {% elif img[0] == 8 %}
+                                        <img class='title_two opacity' id="{{ elem['id'] }}" src="{{ img[1] }}" alt="{{ img[1] }}">
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
                         </div>
                     </div>
                     <div class="section-card">
                         <div class="card-name-and-buybtn">
                             <span id="nm-pr-con">
-                                <a id="{{ elem['id'] }}" class="card-name">{{ elem['Бренд'] + ' ' + elem['Модель'] + ' ' + elem['Колір']}}</a>
+                                <a class="card-name"><abbr id="{{ elem['id'] }}" title="{{ elem['Бренд'] + ' ' + elem['Модель'] + ' ' + elem['Колір']}}">{{ elem['Бренд'] + ' ' + elem['Модель'] + ' ' + elem['Колір']}}</abbr></a>
                                 {% if elem['discountPrice'] %}
                                     <span class="discount-container">
                                         <span class="discountPrice">{{ elem['discountPrice'] }} &#8372;</span>

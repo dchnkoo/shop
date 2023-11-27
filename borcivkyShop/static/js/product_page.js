@@ -56,7 +56,6 @@ function setDopObj() {
 function buyBtn() {
     if (document.querySelector('.active-size')) {
         setDopObj()
-        console.log(Product)
         showOrderWindow(Product)
     } else {
         if (document.getElementById('invalid')) {

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель керування - BORCIVKY UKRAINE</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='panel.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='scs.css') }}">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <nav>
+            <h1>BORCIVKY UKRAINE ADMIN</h1>
+            <ul>
+                <li id="orders">Замовлення</li>
+                <li id="products">Товари</li>
+                <li id="add-pr">Додати новий товар</li>
+            </ul>
+        </nav>
+    </header>
+    <script src="/static/adminjs/header.js"></script>
+
+
+    <div class="modal-window">
+        <div>
+            <div class="info">
+                <h3>Підтвердіть дію:</h3>
+            </div>
+            <div class="modal-btns">
+                <button id="cancel">Скасувати</button>
+                <button id="ok">Підтвердити</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="orders" class="orders-container">
+
+
+        <div>
+            <h1>Замовлення</h1>
+
+            <div class="search-order">
+                <label for="so">Пошук за одним значенням з будь-якої колонки</label>
+                <div>
+                    <input name="so" type="text" placeholder="Пошук">
+                    <button>Шукати</button>
+                </div>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <th></th>
+                <th>Клієнт</th>
+                <th>Номер замовлення</th>
+                <th>id Товару</th>
+                <th>Кількість Товару</th>
+                <th>Розмір</th>
+                <th>Телефон</th>
+                <th>Пошта</th>
+                <th>Місто</th>
+                <th>Відділення</th>
+                <th>Тип оплати</th>
+                <th>Дата замовлення</th>
+            </thead>
+
+            <tbody>
+
+                {% for order in orders() %}
+
+                    {% if order['done'] == 0 %}
+                        <tr id="not-done" class="{{ order['orderId'] }}">
+                    {% else %}
+                        <tr id="done" class="{{ order['orderId'] }}">
+                    {% endif %}
+                            <td>
+                                {% if order['done'] == 0 %}
+                                    <svg id="{{ order['orderId'] }}" class="not-done-svg" viewvbox="0 0 50 50" width="50" height="35">
+                                {% else %}
+                                    <svg class="done-svg" viewvbox="0 0 50 50" width="50" height="35">
+                                {% endif %}
+                                    <circle id="{{ order['orderId'] }}" r="8" cx="50%" cy="38%" stroke="#000" stroke-width="2" fill="none" ></circle>
+                                    <polyline id="{{ order['orderId'] }}" stroke="#000" stroke-linecap="round" stroke-width="2" points="22,21 22,26" fill="none"></polyline>
+                                    <polyline id="{{ order['orderId'] }}" stroke="#000" stroke-linecap="round" stroke-width="2" points="28,21 28,26" fill="none"></polyline>
+                                    <polyline id="{{ order['orderId'] }}" stroke="#000" stroke-linecap="round" stroke-width="2" points="22,26 16,28 16,40" fill="none"></polyline>
+                                    <polyline id="{{ order['orderId'] }}" stroke="#000" stroke-linecap="round" stroke-width="2" points="28,26 33,28 33,40" fill="none"></polyline>
+                                    <polyline id="{{ order['orderId'] }}" stroke="#000" stroke-linecap="round" stroke-width="1.5" points="22,30.5 22,40" fill="none"></polyline>
+                                    <polyline id="{{ order['orderId'] }}" stroke="#000" stroke-linecap="round" stroke-width="1.5" points="28,30.5 28,40" fill="none"></polyline>
+                                    <polyline id="{{ order['orderId'] }}" stroke="#000" stroke-linecap="round" stroke-width="2" points="16,34.4 33,34.4" fill="none"></polyline>
+                                </svg>
+                            </td>
+                            <td>{{ order['Name'] + " " + order['SecondName'] }}</td>
+                            <td>{{ order['orderId'] }}</td>
+                            {% if order['orderProductId'] != None %}
+                                {% if order['data']['Знижка'] > 0 %}
+                                    <td class="with-discount"><abbr title="{{ order['data']['Категорія'] }} {{ order['data']['Бренд'] }} {{ order['data']['Модель'] }} {{ order['data']['Колір'] }} ({{ order['data']['Артикул'] }})">{{ order['orderProductId'] }}</abbr></td>
+                                {% else %}
+                                    <td><abbr title="{{ order['data']['Категорія'] }} {{ order['data']['Бренд'] }} {{ order['data']['Модель'] }} {{ order['data']['Колір'] }} ({{ order['data']['Артикул'] }})">{{ order['orderProductId'] }}</abbr></td>
+                                {% endif %}
+                            {% else %}
+                                <td>Товар відсутній в БД</td>
+                            {% endif %}
+                            <td>{{ order['count'] }}</td>
+                            <td>{{ order['orderSize'] }}</td>
+                            <td><a href="tel:{{ order['phone'] }}">{{ order['phone'] }}</a></td>
+                            <td><a href="mailto:{{ order['Email'] }}">{{ order['Email'] }}</a></td>
+                            <td>{{ order['city'] }}</td>
+                            <td>{{ order['Warhouse'] }}</td>
+                            <td>{{ order['Pay'] }}</td>
+                            <td>{{ order['date'] }}</td>
+                        </tr>                        
+                {% endfor %}
+            </tbody>
+        </table>
+
+        
+
+    </div>
+    
+
+    <script>
+        let orders = document.querySelectorAll('.not-done-svg').length;
+
+        let time = 0.02;
+        document.querySelectorAll('.orders-container circle, .orders-container polyline, .not-done-svg').forEach(elem => {
+            
+            if (!elem.classList.contains('not-done-svg')) {
+                elem.style.animation = `chel 0.3s forwards ease-in ${time}s`;
+                time = time + 0.02;
+            }
+
+            if (elem.parentElement.classList.contains('not-done-svg') || elem.classList.contains('not-done-svg')) {
+
+                elem.onclick = e => {
+                    const windowModal = document.querySelector('.modal-window');
+                    const p = document.createElement('p');
+                    const info = windowModal.querySelector('.info');
+                    
+                    p.classList.add('order-window-msg')
+                    p.innerText = `Бажаєте позначити замовлення ${e.target.id} виконаним?`
+                    
+                    if (windowModal.querySelector('.order-window-msg')) {
+                        windowModal.querySelector('.order-window-msg').innerText = `Бажаєте позначити замовлення ${e.target.id} виконаним?`;
+                    } else {
+                        info.append(p);
+                    }
+    
+                    windowModal.style.display = 'grid';
+                    windowModal.style.placeContent = 'center';
+    
+                    const cancelBtn = windowModal.querySelector('#cancel');
+                    const okBtn = windowModal.querySelector('#ok');
+
+                    cancelBtn.onclick = () => {
+                        windowModal.style.display = 'none';
+                        windowModal.querySelector('.order-window-msg').remove()
+                    }
+
+                    okBtn.onclick = () => {
+                        fetch(window.location + '/change', {
+                            'method' : 'PATCH',
+                            'headers' : {'Content-type' : 'application/json'},
+                            'body' : JSON.stringify({
+                                'orderId' : e.target.id
+                            })
+                        })
+                        .then(data => data.json())
+                        .then(d => {
+                            if (d.code === 200) {
+                                const container = document.querySelector(`.orders-container > table`);
+                                container.querySelectorAll('svg').forEach(elem => {
+                                    if (elem.id === e.target.id) {
+                                        
+                                        windowModal.style.display = 'none';
+        
+                                        elem.classList.remove('not-done-svg');
+                                        orders--;
+        
+                                        updateOrders(orders);
+        
+                                        return;
+                                    }
+                                })
+                            } else {
+                                windowModal.querySelector('.order-window-msg').innerText = d.msg;
+                            }
+                        })
+                    }
+                }
+            }
+            
+        })
+
+        function updateOrders(num) {
+            document.querySelector('.orders-counter').innerText = `Кількість невиконаних замовлень: ${num}`;
+        }
+        
+        if (orders > 0) {
+            const p = document.createElement('p');
+            const getOrdContainer = document.querySelector('.orders-container > div');
+            
+            p.classList.add('orders-counter');
+            p.style.margin = '0.5rem 0';
+            p.style.fontSize = '2rem';
+            p.style.color = '#ff0000';
+            p.style.fontWeight = 'bold';
+            
+
+            getOrdContainer.append(p);
+            updateOrders(orders)
+        }
+
+        console.log(orders)
+    </script>
+
+    <div id="products" class="products-container">
+
+        <div>
+            <h1>Товари</h1>
+
+            <div class="search-product">
+                <label for="so">Пошук за одним значенням з будь-якої колонки</label>
+                <div>
+                    <input name="so" type="text" placeholder="Пошук">
+                    <button>Шукати</button>
+                </div>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <th>id</th>
+                <th>Категорія</th>
+                <th>Бренд</th>
+                <th>Модель</th>
+                <th>Колір</th>
+                <th>Ціна</th>
+                <th>Кількість</th>
+                <th>Артикул</th>
+                <th>Знижка</th>
+                <th>Видалити товар</th>
+            </thead>
+
+            <tbody>
+
+                {% for i in all() %}
+
+                    <tr class="{{ i['id'] }}">
+
+                        <td class="{{ i['id'] }}">{{ i['id'] }}</td>
+                        <td class="{{ i['id'] }}">{{ i['Категорія'] }}</td>
+                        <td class="{{ i['id'] }}">{{ i['Бренд'] }}</td>
+                        <td class="{{ i['id'] }}">{{ i['Модель'] }}</td>
+                        <td class="{{ i['id'] }}">{{ i['Колір'] }}</td>
+                        <td class="{{ i['id'] }}" id="input"><input id="Ціна2" class="{{ i['id'] }}" type="text" value="{{ i['Ціна2'] }}"></td>
+                        <td class="{{ i['id'] }}" id="input"><input id="Кількість" type="text" class="{{ i['id'] }}" value="{{ i['Кількість'] }}"></td>
+                        <td class="{{ i['id'] }}">{{ i['Артикул'] }}</td>
+                        <td class="{{ i['id'] }}" id="input"><input id="Знижка" type="text" class="{{ i['id'] }}" value="{{ i['Знижка'] }}"></td>
+                        <td class="{{ i['id'] }}" id="input"><button id="{{ i['id'] }}" class="delete-ptoduct">Видалити</button></td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+    </div>
+
+    {% import 'edit_prod.html' as forms %}
+
+    {{ forms.form(categ=categories, brand=brands, title='dsds', ptext="Перше вибране фото буде головною на карточці товару, друге вибране буде другим", ctxt="Вибрати існуючу категорію", btxt="Вибрати існуючий бренд", btn="add", btntxt="Додати") }}
+
+
+    <script src="/static/adminjs/products_table.js"></script>   
+    <script type="module" src="/static/adminjs/add_products_section.js"></script>
+    <script src="/static/adminjs/orders_section.js"></script>
+
+    
+    {% include 'scs.html' %}
+</body>
+</html>

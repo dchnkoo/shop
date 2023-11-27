@@ -2,6 +2,7 @@ const cards = [];
 const orders = [];
 const getDate = new Date();
 const LCSTORAGE = 'user_trash';
+const CARDSSTORAGE = 'cards';
 
 let setPosition;
 let cardSetter = 8;
@@ -57,7 +58,15 @@ class Cards {
         let sizesProd;
 
         this.#checkCardsLength();
+        let time = 0.05;
         $('.cards-con-cont').each((index, element) => {
+            if (time > 0.44999999999999996) {
+                time = 0.05
+            }
+            element.style.animation = `showed 0.3s forwards ease-in ${time}s`
+            time = time + 0.05;
+            console.log(time)
+
             let getCard = element.getElementsByClassName('card-container')[0];
             prodId = getCard.getAttribute('id');
 
@@ -68,7 +77,6 @@ class Cards {
             let getArr = Array.from(getImgElement);
 
             getArr.length === 1 ? (
-                getArr[0].setAttribute('class', 'title activated'),
                 getArr[0].addEventListener('click', this.#showProductPage),
                 img = getArr[0].alt
             ) : getArr.forEach(el => {
@@ -77,17 +85,22 @@ class Cards {
                 let getLengthName = 
                     el.src.substring(el.src.indexOf('/', el.src.length - 10) + 1).length;
 
-                getLengthName <= 7 ? (
-                    el.setAttribute('class', 'title activated_opacity'),
-                    img = el.alt
-                ) : el.setAttribute('class', 'title_two opacity');
+                getLengthName <= 7 ? img = el.alt : undefined
             })
 
             // //////////////// name ///////////////////////////////////////////
 
             let getCardName = getCard.getElementsByClassName('card-name')[0];
-            getCardName.addEventListener('click', this.#showProductPage);
-            nameProduct = getCardName.innerHTML;
+            let cardName = getCardName.getElementsByTagName('abbr')[0];
+
+            let nameLim = 25;
+
+            if (cardName.innerText.length > nameLim) {
+                cardName.innerText = cardName.innerText.substring(0, nameLim) + '...';
+            }
+
+            cardName.addEventListener('click', this.#showProductPage);
+            nameProduct = cardName.getAttribute('title');
 
             // //////////////// price /////////////////////////////////////////
             try {
@@ -344,10 +357,45 @@ function sumBcktPrice() {
     }
 }
 
+function checkOrdersTrash(obj) {
+    fetch(window.location.origin + '/get', {
+        'method' : 'POST',
+        'headers' : {'Content-type' : 'application/json'},
+        'body' : JSON.stringify(obj)
+    })
+    .then(data => data.json())
+    .then(d => {
+        if (d.status === 200) {
+            localStorage.setItem(LCSTORAGE, JSON.stringify(d.data))
+        }
+    })
+}
+
+function checkOrders(obj, arr) {
+    for (let key of obj) {
+        for (let key2 of arr) {
+            if (key.idProduct === key2.idProduct) {
+
+                if (key.price !== key2.price) {
+                    key.price = key2.price;
+                } 
+
+                if (key2.discount !== null) {
+                    key.discount = key2.discount;
+                }
+
+            }
+        }
+    }
+}
+
 function checkLocalStorage() {
     try {
+        checkOrdersTrash(JSON.parse(localStorage.getItem(LCSTORAGE)))
+        
         let getObjects = JSON.parse(localStorage.getItem(LCSTORAGE));
-    
+        checkOrders(getObjects, cards);
+
         if (getObjects) {
             for (let obj in getObjects) {
                 appendToBckt(proxyObjCreator(getObjects[obj], {

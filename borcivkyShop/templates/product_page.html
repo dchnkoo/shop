@@ -89,11 +89,21 @@
                     <div class="product-page-images">
                         <div class="product-page-image-container">
                             {% for elem in product['photos'] %}
-                                <img src="{{ elem }}" alt="{{  elem  }}">
+                                <img src="{{ elem[1] }}" alt="{{  elem[1]  }}">
                             {% endfor %}
                         </div>
                         <div class="prodcut-page-big-image">
-                            <img src="{{product['photos'][0]}}" alt="{{product['photos'][0]}}">
+                            {% if product['photos']|length == 1 %}
+                                {% for el in product['photos'] %}
+                                    <img class='title activated_opacity' id="{{ product['id'] }}" src="{{ el[1] }}" alt="{{ el[1] }}">
+                                {% endfor %}
+                            {% else %}
+                                {% for elem in product['photos'] %}
+                                    {% if elem[0] <= 7 %}
+                                        <img src="{{ elem[1] }}" alt="{{  elem[1]  }}">
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
                         </div>
                     </div>
                     <div class="product-page-info-container">

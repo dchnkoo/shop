@@ -1,0 +1,57 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-family: 'Mulish', sans-serif;
+}
+
+body {
+    padding: 2rem;
+}
+
+body > h1 {
+    margin: 1rem 0;
+}
+
+.photos-container {
+    display: flex;
+    flex-flow: row wrap;
+
+    min-width: 1500px;
+    gap: 40px;
+    justify-content: space-between;
+}
+
+.photos-container > div > div {
+    display: flex;
+    flex-flow: column nowrap;
+
+    justify-content: center;
+    align-items: center;
+
+    padding: 1rem;
+    background: #3333336e;
+    box-shadow: inset 0 0 10px #333;
+}
+
+.photos-container img {
+    width: 20vw;
+}
+
+.photos-container > div > button {
+    padding: 0.3rem 0.7rem;
+    margin: 0.4rem 0.4rem 0.4rem 0;
+
+    cursor: pointer;
+}
+
+.photos-container > div > button:active {
+    transform: scale(0.95);
+}
+
+#add-product.put-product-container > div + div + div {
+    bottom: 4rem;
+}

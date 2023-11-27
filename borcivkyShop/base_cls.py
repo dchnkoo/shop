@@ -11,24 +11,26 @@ import threading
 from random import choice
 import os
 
+
 db = SQL('sqlite:///borcivky.db')
 
 """ ////////////////////////// VARIABLES //////////////////////////////////// """
 
 ############### SQL query ################
-_Card__sql_query_for_category = "SELECT * FROM borcivkyShop WHERE Категорія=? AND Наявність <> 0 AND Ціна2 >= ? AND Ціна2 <= ?"
-_Card__sql_query_for_price_range = "SELECT * FROM borcivkyShop WHERE Наявність <> 0 AND Ціна2 >= ? AND Ціна2 <= ?"
-_Card__sql_query_for_all_products = "SELECT * FROM borcivkyShop WHERE Наявність <> 0"
-_Card__sql_query_desc_orderById = "SELECT * FROM borcivkyShop WHERE Наявність <> 0 AND Знижка = 0 ORDER BY id DESC"
+_Card__sql_query_for_category = "SELECT * FROM borcivkyShop WHERE Категорія=? AND Кількість <> 0 AND Ціна2 >= ? AND Ціна2 <= ?"
+_Card__sql_query_for_price_range = "SELECT * FROM borcivkyShop WHERE Кількість <> 0 AND Ціна2 >= ? AND Ціна2 <= ?"
+_Card__sql_query_for_all_products = "SELECT * FROM borcivkyShop WHERE Кількість <> 0"
+_Card__sql_query_desc_orderById = "SELECT * FROM borcivkyShop WHERE Кількість <> 0 AND Знижка = 0 ORDER BY id DESC"
 _Card__sql_query_price_byId = 'SELECT Ціна FROM borcivkyShop WHERE id=?'
 _Card__sql_query_update_price2 = 'UPDATE borcivkyShop SET Ціна2=? WHERE id=?'
 _Card__sql_query_update_price2_discount = 'UPDATE borcivkyShop SET Ціна2=? WHERE id=?'
-_Card__sql_query_to_get_discountsProducts = "SELECT * FROM borcivkyShop WHERE Наявність <> 0 AND Знижка > 0"
+_Card__sql_query_to_get_discountsProducts = "SELECT * FROM borcivkyShop WHERE Кількість <> 0 AND Знижка > 0"
 _Card__sql_query_select_id = "SELECT * FROM borcivkyShop WHERE id=?"
-_Card__sql_query_to_get_minPrice = 'SELECT Ціна2 FROM borcivkyShop WHERE Наявність <> 0 ORDER BY Ціна2 ASC'
-_Card__sql_query_to_get_max_price = 'SELECT Ціна2 FROM borcivkyShop WHERE Наявність <> 0 ORDER BY Ціна2 DESC'
+_Card__sql_query_to_get_minPrice = 'SELECT Ціна2 FROM borcivkyShop WHERE Кількість <> 0 ORDER BY Ціна2 ASC'
+_Card__sql_query_to_get_max_price = 'SELECT Ціна2 FROM borcivkyShop WHERE Кількість <> 0 ORDER BY Ціна2 DESC'
 _Card__sql_query_select_category = 'SELECT * FROM borcivkyShop WHERE Категорія=?'
 _Card__sql_query_get_unik_categories = 'SELECT DISTINCT Категорія FROM borcivkyShop'
+_Card__sql_query_get_unik_brands = 'SELECT DISTINCT Бренд FROM borcivkyShop'
 
 handler = logging.FileHandler('project.log')
 handler.setFormatter(logging.Formatter('%(levelname)s - %(asctime)s: %(message)s'))
@@ -102,9 +104,10 @@ class Card:
         Функція виводить рандомну фотографію на банер
         """
 
-        path  = 'static/banner-image'
+        
+        paths  = '/static/banner-image'
 
-        return path + '/' + choice(os.listdir(path=path))
+        return paths + '/' + choice(os.listdir(path=os.path.abspath(os.curdir) + paths))
     
     @check_time
     def get_database_info_of_cards(self, path, data, category = False, two_image = False):
@@ -145,14 +148,16 @@ class Card:
 
         if category:
 
-            data['Розмір'] = data['Розмір'].split(' ')                         
-            data['photos'] = list(map(lambda x: f'{path}/{forCheck['brand']}/{name}/{x}', photos))
+
+            data['Розмір'] = data['Розмір'].split(' ')   
+            data['photos'] = [(len(i), f'{path}/{forCheck['brand']}/{name}/{i}') for i in photos]
             return data
         
         else:
 
             data['Розмір'] = data['Розмір'].split(' ') 
-            data['photos'] = list(map(lambda x: f'{path}/{forCheck['categ']}/{forCheck['brand']}/{name}/{x}', photos))
+            data['photos'] = [(len(i), f'{path}/{forCheck['categ']}/{forCheck['brand']}/{name}/{i}') for i in photos]
+
             return data
 
 
@@ -173,6 +178,7 @@ class Card:
                 return True
             else:
                 return False
+    
             
     def check_category_database(self, category):
 
@@ -200,7 +206,7 @@ class Card:
         Повертає dict
         """         
         
-        return self.get_database_info_of_cards(f'static/images/{category}', data, category=True, two_image=True)
+        return self.get_database_info_of_cards(f'static/images/{self.check_for_space(self.check_for_slash(category))}', data, category=True, two_image=True)
         
     def get_all_by_price(self, data):
         """
@@ -240,6 +246,9 @@ class Card:
 
     def get_categories(self):
         return self.__db.execute(_Card__sql_query_get_unik_categories)
+    
+    def get_brands(self):
+        return self.__db.execute(_Card__sql_query_get_unik_brands)
 
 
     def newProductsPage(self):
@@ -278,27 +287,32 @@ class Card:
         categ = []
         path = 'static/images'
 
-        categories = os.listdir(path)
-
+        c = self.get_categories()
+        cl = [j['Категорія'] for j in c]
 
         while len(categ) != 4:
-            categories = choice(os.listdir(path))
-            if categories not in categ:
-                categ.append(categories)
+            cc = choice(cl)
+            ccp = self.check_for_space(self.check_for_slash(cc))
+            categories = choice(os.listdir(path + '/' + ccp))
+            if cc not in categ:
+                categ.append(cc)
             else:
                 continue
+            
+            try:
+                brend = choice(os.listdir(f"{path}/{ccp}/{categories}"))
+            except:
+                continue
 
-            brend = choice(os.listdir(f"{path}/{categories}"))
+            photos_list = os.listdir(f"{path}/{ccp}/{categories}/{brend}")
 
-            product = choice(os.listdir(f"{path}/{categories}/{brend}"))
+            if len(photos_list) < 1:
+                continue
 
-            img = os.listdir(f"{path}/{categories}/{brend}/{product}")
+            img = [i for i in photos_list if len(i) == min([len(j) for j in photos_list])][0]
 
-            for j in range(len(img)):
-                if len(img[j][:img[j].index('.')]) <= 3:
-                    image = img[j]
 
-            yield {'photos': f'{path}/{categories}/{brend}/{product}/{image}', 'category': categories}
+            yield {'photos': f'{path}/{ccp}/{categories}/{brend}/{img}', 'category': cc}
 
 
 
@@ -324,9 +338,9 @@ class Card:
     def get_sort_products(self, sort, category=None):
         if category:
             if sort == 'max-sort':
-                query = 'SELECT * FROM borcivkyShop WHERE Категорія=? AND Наявність <> 0 ORDER BY Ціна2 DESC'
+                query = 'SELECT * FROM borcivkyShop WHERE Категорія=? AND Кількість <> 0 ORDER BY Ціна2 DESC'
             elif sort == 'min-sort':
-                query = 'SELECT * FROM borcivkyShop WHERE Категорія=? AND Наявність <> 0 ORDER BY Ціна2 ASC'
+                query = 'SELECT * FROM borcivkyShop WHERE Категорія=? AND Кількість <> 0 ORDER BY Ціна2 ASC'
             else:
                 return False
 
@@ -335,15 +349,19 @@ class Card:
 
         else:
             if sort == 'max-sort':
-                query = 'SELECT * FROM borcivkyShop WHERE Наявність <> 0 ORDER BY Ціна2 DESC'
+                query = 'SELECT * FROM borcivkyShop WHERE Кількість <> 0 ORDER BY Ціна2 DESC'
             elif sort == 'min-sort':
-                query = 'SELECT * FROM borcivkyShop WHERE Наявність <> 0 ORDER BY Ціна2 ASC'
+                query = 'SELECT * FROM borcivkyShop WHERE Кількість <> 0 ORDER BY Ціна2 ASC'
             else:
                 return False
             
             for i in self.__db.execute(query):
                 yield self.get_all_product(i)
 
+    def get_all(self):
+        query = self.__db.execute('SELECT * FROM borcivkyShop')
+        for i in range(len(query)):
+            yield self.get_all_product(query[i])
 
     @check_time
     def getProducts_database(self, pricemin=None, pricemax=None, category=None, random = 0, limitation=0):
@@ -396,19 +414,29 @@ class Card:
 
 
 
-insert_order_information = 'INSERT INTO orders VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+insert_order_information = 'INSERT INTO orders VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
 
 
 
-class Orders:
+class Orders(Card):
 
     def __init__(self):
-        self.__db = db
+        super().__init__()
+        self._db = db
 
-    def insert_order(self, **kwards):
+    def insert_order(self, done=0, **kwards):
 
-        self.__db.execute(insert_order_information, 
+        self._db.execute(insert_order_information, 
                           kwards['orderId'], kwards['idProduct'],
                           kwards['ordersize'], kwards['userName'], kwards['secondName'],
                           kwards['userPhone'], kwards['userEmail'], kwards['City'], kwards['vidil'],
-                          kwards['opls'], kwards['time'], kwards['value'])
+                          kwards['opls'], kwards['time'], kwards['value'], done)
+
+
+    def get_orders(self) -> dict:
+
+        for i in self._db.execute('SELECT * FROM orders ORDER BY date DESC LIMIT 1000'):
+            if i['orderProductId'] != None:
+                i['data'] = self.getProduct_for_page(int(i['orderProductId']))
+            
+            yield i

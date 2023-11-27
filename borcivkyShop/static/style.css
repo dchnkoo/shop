@@ -252,38 +252,34 @@ body {
 
     width: 80vw;
 
-    opacity: 0;
 
-    animation-name: showpage;
-    animation-duration: var(--BTN-transition);
-    animation-delay: var(--delay-page-load);
-    animation-timing-function: ease-in;
-    animation-fill-mode: forwards;
-}
-
-
-
-@keyframes showpage {
-    0% {
-        opacity: 0;
-    }
-
-    100% {
-        opacity: 1;
-    }
 }
 
 /* BANNER home.html */
 .block-banner-container {
     display: grid;
 
+    opacity: 0;
+    animation: sss 0.3s forwards ease-in 0.4s;
     margin: 1rem 0;
+
+
+}
+
+
+@keyframes sss {
+    from {
+        opacity: 0;
+    } to {
+        opacity: 1;
+    }
 }
 
 .banner-container {
     background: var(--BANER-COLOR);
     width: 100%;
     height: 100%;
+
 }
 
 .banner {
@@ -298,10 +294,11 @@ body {
     align-items: center;
     justify-content: center;
 
-    max-width: 300px;
+    max-width: 400px;
 
     filter: drop-shadow(rgba(204, 209, 245) 30px 10px 18px);
 }
+
 
 .banner-txt-container div:not(.banner-txt) {
     display: none;
@@ -335,7 +332,7 @@ body {
     text-align: justify;
     font-size: var(--FS);
     line-height: 2rem;
-    /* line-height-step: 1rem; */
+    max-width: 400px;
 }
 
 .banner-txt h1::before {
@@ -370,15 +367,15 @@ body {
 
 @keyframes borcivky {
     0% {
-        transform: translateY(-4px);
+        transform: translateY(-1.5px);
     }
 
     50% {
-        transform: translateY(4px);
+        transform: translateY(1.5px);
     }
 
     100% {
-        transform: translateY(-4px);
+        transform: translateY(-1.5px);
     }
 }
 
@@ -446,12 +443,12 @@ body {
     top: 50%;
     left: 70%;
     z-index: 90;
-    animation: circles 3s infinite ease-in-out;
+    animation: circles3 3s infinite ease-in-out;
 }
 
-@keyframes circles {
+@keyframes circles3 {
     0% {
-        transform: translateY(-4px);
+        transform: translateY(-1.5px);
     }
 
     40% {
@@ -459,7 +456,7 @@ body {
     }
 
     50% {
-        transform: translateY(4px);
+        transform: translateY(1.5px);
     }
 
     90% {
@@ -467,13 +464,13 @@ body {
     }
 
     100% {
-        transform: translateY(-4px);
+        transform: translateY(-1.5px);
     }
 }
 
 @keyframes circles1 {
     0% {
-        transform: translateY(-4px);
+        transform: translateY(-1.5px);
     }
 
     30% {
@@ -481,7 +478,7 @@ body {
     }
 
     50% {
-        transform: translateY(4px);
+        transform: translateY(1.5px);
     }
 
     70% {
@@ -489,13 +486,13 @@ body {
     }
 
     100% {
-        transform: translateY(-4px);
+        transform: translateY(-1.5px);
     }
 }
 
 @keyframes circles2 {
     0% {
-        transform: translateY(-4px);
+        transform: translateY(-1.5px);
     }
 
     10% {
@@ -503,7 +500,7 @@ body {
     }
 
     50% {
-        transform: translateY(4px);
+        transform: translateY(1.5px);
     }
 
     51% {
@@ -511,7 +508,7 @@ body {
     }
 
     100% {
-        transform: translateY(-4px);
+        transform: translateY(-1.5px);
     }
 }
 
@@ -709,6 +706,20 @@ aside.filter-panel-container {
     display: block;
     padding: 0.4rem;
     margin-bottom: 1rem;
+
+    filter: blur(2px);
+    opacity: 0;
+}
+
+@keyframes showed {
+    from {
+        opacity: 0;
+        filter: blur(2px);
+    } to {
+        opacity: 1;
+        filter: blur(0px);
+
+    }
 }
 
 .card-container {
@@ -823,6 +834,11 @@ aside.filter-panel-container {
 
     display: flex;
     justify-content: space-between;
+}
+
+abbr[title] {
+    text-decoration: none;
+    border-bottom: none;
 }
 
 .card-name-and-buybtn {
@@ -1414,6 +1430,7 @@ footer {
     box-shadow: var(--box-SHADOW);
     height: 100%;
     width: auto;
+    min-height: 310px;
     margin: 1rem 1rem;
     transition: var(--BTN-transition);
 }
@@ -1660,6 +1677,19 @@ footer {
     animation-iteration-count: 1;
 }
 
+#paidAndDelivery ul li {
+    color: var(--LinksColor);
+    font-size: var(--FS);
+    transition: var(--BTN-transition);
+    opacity: 0.8;
+}
+
+#paidAndDelivery ul li:hover {
+    color: var(--STATIC-COLOR);
+    opacity: 1;
+    filter: brightness(110%);
+}
+
 .how_return li {
     cursor: pointer;
 }
@@ -1721,6 +1751,10 @@ footer {
     .banner-container .banner-img figure > span {
         width: 30px;
         height: 30px;
+    }
+
+    .banner .banner-txt-container {
+        max-width: 200px;
     }
 
 
@@ -1851,6 +1885,10 @@ footer {
 
     .categoty-cards-container {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .banner-txt-container {
+        max-width: 300px;
     }
 
     .banner-img figure > span {
