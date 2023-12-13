@@ -1,0 +1,265 @@
+
+html body .page-container {
+    opacity: 0;
+    animation: shh 0.2s forwards ease-in 0.3s;
+}
+
+@keyframes shh {
+    from {
+        opacity: 0;
+    } to {
+        opacity: 1;
+    }
+}
+
+
+.product-page-container {
+    display: flex;
+
+    margin: 5rem 0;
+}
+
+.product-page-info-container {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.product-page-image-container {
+    display: grid;
+    grid-template-rows: repeat(4, 1fr);
+
+    row-gap: 10px;
+    
+}
+
+.product-page-images {
+    display: flex;
+}
+
+.product-page-image-container img {
+    width: 6vw;
+    cursor: pointer;
+}
+
+.prodcut-page-big-image {
+    width: 31vw;
+    margin: 0 0.3rem;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.prodcut-page-big-image img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.product-price {
+    display: flex;
+    flex-flow: column nowrap;
+    margin-bottom: 0.5rem;
+}
+
+.product-name span {
+    font-size: clamp(1.3rem ,2vw, 2.5rem);
+    color: #4B5187;
+
+    font-weight: bolder;
+
+    text-transform: uppercase;
+
+    margin-bottom: 0.3rem;
+}
+
+.price-name {
+    font-size: clamp(1.3rem ,1.5vw, 2.5rem);
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+}
+
+.staticPrice {
+    font-size: clamp(0.9rem ,1.3vw, 2.5rem);
+    font-weight: bold;
+    color: #46A358;
+}
+
+.withoutDiscountPrice {
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+.discountPriceName {
+    margin: 0 0.4rem;
+    font-size: clamp(0.9rem ,1.3vw, 2.5rem);
+    color: #973F3F;
+    font-weight: bold;
+}
+
+.product-description {
+    border-top: 1px solid #3333334a;
+    padding: 0.5rem 0;
+    display: flex;
+    flex-flow: column nowrap;
+
+    font-size:clamp(0.9rem ,1vw, 2.5rem);
+}
+
+.product-description span:not(.description) {
+    margin-bottom: 0.3rem;
+}
+
+.description {
+    color: #3333337e;
+}
+
+.desc-btn {
+    background: transparent;
+    cursor: pointer;
+    display: none;
+}
+
+input[type='radio']:not(input[name='req']) {
+    display: none;
+}
+
+.product-sizes {
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.product-sizes > span {
+    font-size: clamp(0.9rem ,1.3vw, 2.5rem);
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.product-sizes > div {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    align-items: center;
+
+}
+
+.active-size {
+    border-color: #46A358;
+    color: #46A358;
+}
+
+.product-sizes > div > div {
+    margin-bottom: 1.3rem;
+}
+
+.product-page-btns {
+    display: flex;
+    justify-content: space-between;
+}
+
+.product-page-btns > div {
+    margin-right: 0.4rem;
+}
+
+.plus,
+.minus {
+    padding: 0.6rem;
+    background: linear-gradient(180deg, #46A358 0%, rgba(70, 163, 88, 0.80) 100%);
+    color: #fff;
+    font-size: clamp(0.9rem ,1.3vw, 2.5rem);
+    border-radius: 50px;
+}
+
+.number-btns span {
+    margin: 0 0.5rem;
+}
+
+.buy_bckt-btns button {
+    font-size: clamp(0.9rem ,1.1vw, 2.5rem);
+    padding: 0.6rem 1.4rem;
+    border-radius: 5px;
+    margin-right: 0.5rem;
+}
+
+#buy {
+
+    background: rgba(70, 163, 88);
+    color: #fff;
+    transition: 0.3s;
+
+    height: 100%;
+    
+    
+}
+
+#buy:hover {
+    transform: scale(1.05);
+}
+
+#in-bckt {
+    height: 100%;
+
+    background: transparent;
+    color: rgba(70, 163, 88);
+    border: 1px solid rgba(70, 163, 88);
+
+    overflow: hidden;
+    position: relative;
+    transition: 0.3s;
+}
+
+#in-bckt span {
+    width: 2px;
+    height: 2px;
+
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+    z-index: -1;
+    opacity: 0;
+    border-radius: 50%;
+    background: rgba(70, 163, 88);
+}
+
+#in-bckt:hover {
+    color: #fff;
+    transform: scale(1.05);
+}
+
+#in-bckt:hover span {
+    animation: bcktHover 1.5s ease forwards;
+}
+
+@keyframes bcktHover {
+    0% {
+        transform: scale(0);
+    }
+
+    100% {
+        transform: scale(220);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 576px) {
+
+    .product-page-container {
+        flex-flow: column nowrap;
+    }
+
+    .prodcut-page-big-image {
+        width: 100%;
+    }
+
+    .product-page-image-container img {
+        width: 13vw;
+    }
+}
+
+
+footer .cards-con-cont {
+    height: 100%;
+}

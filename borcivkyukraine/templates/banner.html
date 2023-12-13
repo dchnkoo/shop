@@ -1,0 +1,62 @@
+<div style="user-select: none;" class="block-banner-container">
+    <div class="banner-container">
+        <svg id="left-btn" viewbox="0 0 30 50" width="30" height="50">
+            <polyline stroke-width="4" fill="none" stroke-dasharray="70" stroke-dashoffset="70" points="28,2 2,25 28,48 " stroke="#000" />
+        </svg>
+        <div class="banner-container-s">
+            <div class="banner">
+                <img class="slide-item active" src="static/banner-image/Банер1.jpg" alt="">
+                <img class="slide-item" src="static/banner-image/Банер2.jpg" alt="">
+                <img class="slide-item" src="static/banner-image/Банер3.jpg" alt="">
+            </div>
+        </div>
+        <svg id="right-btn" viewbox="0 0 30 50" width="30" height="50">
+            <polyline stroke-width="4" stroke-dasharray="70" stroke-dashoffset="70" fill="none" points="2,2 25,25 2,48 " stroke="#000" />
+        </svg>
+    </div>
+</div>
+
+<script>
+    const slides = document.querySelector('.banner');
+    const slideItems = Array.from(document.querySelectorAll('.slide-item'));
+    const rightBtn = document.querySelector('#right-btn');
+    const leftBtn = document.querySelector('#left-btn');
+
+
+    const imgList = slides.querySelectorAll('img');
+    let currentIndex = imgList.length - imgList.length;
+
+
+
+
+    rightBtn.addEventListener('click', () => navigate(1));
+    leftBtn.addEventListener('click', () => navigate(-1));
+
+    function navigate(direction) {
+        currentIndex += direction;
+        updateSlider();
+    }
+
+    function updateSlider() {
+        if (currentIndex < 0) {
+            currentIndex = (imgList.length - 1);
+        } else if (currentIndex > (imgList.length - 1)) {
+            currentIndex = 0;
+        }
+        const newPosition = -currentIndex * 100 + '%';
+        slides.style.transform = 'translateX(' + newPosition + ')';
+        toggleButtonVisibility();
+    }
+
+    function toggleButtonVisibility() {
+        leftBtn.style.display = currentIndex > 0 ? 'block' : 'none';
+        rightBtn.style.display = currentIndex < slideItems.length ? 'block' : 'none';
+    }
+
+    function autoSlide() {
+        navigate(1);
+    }
+
+    setInterval(autoSlide, 7000);
+    toggleButtonVisibility();
+</script>

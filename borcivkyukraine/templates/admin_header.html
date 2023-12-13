@@ -1,0 +1,20 @@
+{% macro header(loaders = False) %}
+    <header style="transition: all 0.3s ease-in-out;">
+        <nav style="background: #fff;">
+            <h1>BORCIVKY UKRAINE ADMIN</h1>
+
+            {% if loaders %}
+                <div>
+                    <button id="load_data">Завантажити дані на сервер<span></span></button>
+                    <button id="load_data_to_site">Вивантажити дані на сайт<span></span></button>
+                </div>
+            {% endif %}
+
+            <ul>
+                {% for key in kwargs %}
+                    <li id="{{ key }}">{{ kwargs[key] }}</li>
+                {% endfor %}
+            </ul>
+        </nav>
+    </header>
+{% endmacro %}

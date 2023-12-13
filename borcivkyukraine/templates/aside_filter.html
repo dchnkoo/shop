@@ -1,0 +1,154 @@
+<aside id="slide-menu" class="filter-panel-container">
+    <div class="panel-container">
+        <button id="crosser">&#9587;</button>
+        <div class="btn-cross"><label class="category" for="filter-label">Категорії</label></div>
+        <div class="filter">
+            {% for category in get_categories() %}
+                <span>
+                    <input onclick="getCategory(this)" id="{{ category['Категорія'] }}" class="checkbox" name="category" type="radio" value="{{category['Категорія']}}"><label for="{{category['Категорія']}}">{{category['Категорія']}}</label>
+                </span>
+            {% endfor %}
+        </div>
+        <div class="btn-cross-sz"><label class="sz" for="filter-label-sz">Розміри</label></div>
+        <div class="sz_filter">
+            {% for size in sz()['digits'] %}
+                <span>
+                    <input type="radio" id="{{ size }}" class="checkbox" name="sz" value="{{ size }}"><label for="{{size}}">{{ size }}</label>
+                </span>
+            {% endfor %}
+            {% for size in sz()['string'] %}
+                <span>
+                    <input type="radio" id="{{ size }}" class="checkbox" name="sz" value="{{ size }}"><label for="{{size}}">{{ size }}</label>
+                </span>
+            {% endfor %}
+        </div>
+        <div class="btn-brands"><label class="br" for="filter-label-br">Бренди</label></div>
+        <div class="br_filter">
+            {% for brand in get_brands() %}
+
+                <span>
+                    <input type="radio" id="{{brand['Бренд']}}" class="checkbox" name="br" value="{{brand['Бренд']}}"><label for="{{brand['Бренд']}}">{{brand['Бренд']}}</label>
+                </span>
+
+            {% endfor %}
+        </div>
+        <div class="price-filter">
+            <label class="range" for="range">Фільтр ціни</label>
+            <span>
+                <input id="range" type="text" value="{{ min() }}" name="price-min" autocomplete="off"> - <input autocomplete="off" name="price-max" type="text" value="{{ max() }}">
+            </span>
+            <span>
+                <button onclick="search(this)">Пошук</button>
+            </span>
+        </div>
+    </div>
+</aside>
+
+<script>
+    const url = new URLSearchParams(location.search);
+
+    // Якщо сторінка категорії тоді згортаємо категорії і робимо кнопку
+    if (url.get('category')) {
+        document.querySelectorAll('.filter-panel-container > .panel-container > .filter input').forEach(elem => {
+            if (elem.type === 'radio') {
+                if (url.get('category') === elem.value) {
+                    elem.checked = true;
+                }
+            }
+        })
+
+        const categoryBtn = document.querySelector('.btn-cross');
+        const filterDiv = document.querySelector('.filter');
+        const filterLabel = document.querySelector('.btn-cross > label');
+
+        setFilterBtns(categoryBtn, filterLabel, filterDiv, 'flex')
+        categoryBtn.classList.add('add-after-el')
+
+    }    
+
+    function setFilterBtns($block, $label, $block2, $display) {
+        $block.onmouseover = () => {
+            $label.style.textDecoration = 'underline';
+        }
+        
+        $block.onmouseleave = () => {
+            $label.style.textDecoration = 'none';
+        }
+
+        $block.style.userSelect = 'none';
+        $block.style.cursor = 'pointer';
+        $label.style.cursor = 'pointer';
+
+        $block2.style.display = 'none';
+        $block.onclick = () => {
+            if ($block2.style.display === 'none') {
+                $block2.style.display = $display;
+            } else {
+                $block2.style.display = 'none';
+            }
+        }        
+    }
+
+    const sizesBtn = document.querySelector('.btn-cross-sz');
+    const sizesLabel = document.querySelector('.btn-cross-sz > label');
+    const sizes = document.querySelector('.sz_filter');
+
+    setFilterBtns(sizesBtn, sizesLabel, sizes, 'grid')
+
+
+    sizes.querySelectorAll('input').forEach(elem => {
+        elem.onclick = e => {
+            location.href = window.location.origin + `/search?size=${e.target.value}`
+        }
+        if (elem.value === url.get('size')) {
+            elem.checked = true;
+        }
+    })
+
+    
+    const brBtn = document.querySelector('.btn-brands');
+    const brLabel = document.querySelector('.btn-brands > label');
+    const brBlock = document.querySelector('.br_filter');
+
+    setFilterBtns(brBtn, brLabel, brBlock, 'flex');
+
+    brBlock.querySelectorAll('input').forEach(elem => {
+        elem.onclick = e => {
+            location.href = window.location.origin + `/search?brand=${e.target.value}`
+        }
+        if (elem.value === url.get('brand')) {
+            elem.checked = true;
+        }
+    })
+
+
+    function search(e) {
+        const filterDiv = e.parentElement.parentElement;
+        const priceMin = filterDiv.querySelector('input#range').value;
+        const priceMax = filterDiv.querySelector('input#range + input').value;
+
+        if (url.get('category')) {
+            return location.href = window.location.origin + `/search?category=${url.get('category')}&price-min=${priceMin}&price-max=${priceMax}`;
+        } else {
+            return location.href = window.location.origin + `/search?price-min=${priceMin}&price-max=${priceMax}`;
+        }
+
+        
+    }
+
+    function getCategory(e) {
+        const priceMin = document.querySelector('input#range').value;
+        const priceMax = document.querySelector('input#range + input').value;
+        const category = e.id;
+
+
+        location.href = window.location.origin + `/search?category=${category}&price-min=${priceMin}&price-max=${priceMax}`;
+    }
+
+
+
+
+
+
+
+</script>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="authors" content="Developer: Valerii Diachenko UI/UX: Nazarii Samchuk">
+    <title>{{ product['Категорія'] }}: {{ product['Бренд'] }} {{ product['Модель'] }} {{ product['Колір'] }} {{ product['Ціна2'] }} &#8372; - BORCIVKY UKRAINE</title>
+   {% include 'styles.html' %}
+   <link rel="stylesheet" href="{{ url_for('static', filename='product_page.css') }}">
+
+    
+
+</head>
+<body>
+    {% include 'bckt.html' %}
+    {% include 'scs.html' %}
+    <div class="show-order-block noactive">
+    <div class="order-block noactive">
+        <div class="order-info">
+            <div class="order-info-header">
+                <h2>Ваше замовлення</h2>
+                <button>&#9587;</button>
+            </div>
+            <div class="order-templates-container">
+                <div class="orders-templ">
+                    <div class="order-img">
+                        <img src="" alt="">
+                    </div>
+                    <div class="order-name_price">
+                        <p class="order-name"></p>
+                        <p class="order-price"></p>
+                        <p class="order-discount"></p>
+                    </div>
+                </div>
+                <div class="sizes">
+                    <h2>Оберіть розмір:</h2>
+                    <div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="forms">
+            <div class="order-form">
+                <h2>Ваші контактні данні</h2>
+                <div class="userName">
+                    <label for="name">Ім'я</label>
+                    <input name="name" type="text" autofocus autocomplete="off">
+                </div>
+                <div class="userSecondName">
+                    <label for="second_name">Прізвище</label>
+                    <input name="second_name" type="text" autocomplete="off">
+                </div>
+                <div class="userPhone">
+                    <label for="phone">Мобільний телефон</label>
+                    <input type="text" name="phone" placeholder="+ 38 (000) 000 00 00">
+                </div>
+                <div class="userEmail">
+                    <label for="phone">Електрона пошта</label>
+                    <input type="email" name="userEmail" placeholder="example@gmail.com">
+                </div>
+                {% include "np_z.html" %}
+                <div class="info-inputs">
+                    <input type="text" name="prodcutId" class="noactive">
+                </div>
+                <div class="oplata">
+                    <h1>Виберіть тип оплати</h1>
+                    <div>
+                        {% for op in oplata %}
+                            <span>
+                                <input class="orders-opl-elems" type="radio" name="req" value="{{ op }}">
+                                <label for="nal">{{ op }}</label>
+                            </span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <input class="submit" type="submit" value="Підтвердити замовлення">
+            </div>
+            <div class="succes-order">
+                <svg viewbox="0 0 150 135" width="100%" height="300">
+                    <polyline class="polyline" points="20,60 50,90 110,20" stroke="green" stroke-width="15" fill="none"/>
+                </svg>
+                <text class="polyline" fill="black" style="font-weight:bold;">Ваше замовлення зареєстровано. Додаткова інформація надійде на вашу пошту</text>
+            </div>
+        </div>
+    </div>
+</div>
+    <div class="page-container">
+        {% include 'header.html' %}
+        <main>
+            <div>
+                <div class="product-page-container">
+                    <div class="product-page-images">
+                        <div class="product-page-image-container">
+                            {% for elem in product['photos'] %}
+                                <img src="{{ elem[1] }}" alt="{{  elem[1]  }}">
+                            {% endfor %}
+                        </div>
+                        <div class="prodcut-page-big-image">
+                            {% if product['photos']|length == 1 %}
+                                {% for el in product['photos'] %}
+                                    <img class='title activated_opacity' id="{{ product['id'] }}" src="{{ el[1] }}" alt="{{ el[1] }}">
+                                {% endfor %}
+                            {% else %}
+                                {% for elem in product['photos'] %}
+                                    {% if elem[0] <= 7 %}
+                                        <img src="{{ elem[1] }}" alt="{{  elem[1]  }}">
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="product-page-info-container">
+                        <div>
+                            <div class="product-name">
+                                <span>{{ product['Бренд'] }} {{ product['Модель'] }}</span>
+                            </div>
+                            <div class="product-price">
+                                {% if product['discountPrice'] %}
+                                    <span class="price-name">Ціна</span>
+                                    <div>
+                                        <span class="withoutDiscountPrice">{{ product['Ціна'] }} &#8372;</span>
+                                        <span class="discountPriceName">{{ product['discountPrice'] }} &#8372;</span>
+                                    </div>
+                                {% else %}
+                                    <span class="price-name">Ціна</span>
+                                    <span class="staticPrice">{{ product['Ціна'] }} &#8372;</span>
+                                {% endif %}
+                            </div>
+                            <div class="product-description">
+                                <span>{{ product['Категорія'] }} {{ product['Бренд'] }} ({{product['Артикул']}})</span>
+                                <div><span class="description">{{ product['Опис'] }}</span><button class="desc-btn">...</button></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="product-sizes">
+                                <span>Розмір</span>
+                                <div>
+                                    {% for i in product['Розмір'] %}
+                                        {% if i != '' %}
+                                            <div><span class='product-size'>{{ i }}</span></div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="product-page-btns">
+                                <div class="number-btns">
+                                    <button class="plus">+</button>
+                                    <span>1</span>
+                                    <button class="minus">-</button>
+                                    <p class="product-n" style="display: none;">{{ product['Кількість'] }}</p>
+                                </div>
+                                <div class="buy_bckt-btns">
+                                    <button onclick="buyBtn(this)" id="buy">КУПИТИ</button>
+                                    <button onclick="bcktBtn(this)" id="in-bckt">В КОШИК<span></span></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        {% include 'footer.html' %}
+    </div>
+    <style>
+        @keyframes invalid {
+            0% {
+                transform: scale(1);
+            }
+            30% {
+                transform: rotateY(5deg);
+            }
+            50% {
+                transform: scale(1.03);
+            }
+            60% {
+                transform: rotateY(-5deg);
+            }
+            100% {
+                transform: rotateY(0);
+                transform: scale(1);
+            }
+        }
+    </style>
+    {% include 'scripts.html' %}
+    <script src="/static/js/product_page.js"></script>
+
+</body>
+</html>

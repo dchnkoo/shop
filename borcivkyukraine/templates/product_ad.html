@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редагування товару - {{ prod['Категорія'] }} {{ prod['Бренд'] }} {{ prod['Модель'] }} {{ prod['Колір'] }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='pr_ad.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='panel.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='scs.css') }}">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    {% import 'admin_header.html' as h %}
+
+    {{ h.header(site='До Сайту', panel='Панель керування') }}
+
+    <script src="/static/adminjs/header.js"></script>
+
+
+    <h1>Фотографії</h1>
+    <div class="photos-container">
+        {% for img in prod['photos'] %}
+            <div>
+                <div>
+                    <img class="{{ prod['id'] }}" src="/{{ img[1] }}" alt="{{ img[1] }}">
+                    
+                    <span style="white-space: nowrap;color: #fff;margin: 1rem 0;" id="{{ img[1] }}">{{ img[1].split('/')[-1] }}</span>
+                </div>
+                
+                <button id="del" data="{{ img[1] }}" class="{{ prod['id'] }}">Видалити</button>
+                <button data="{{ img[1] }}" style="color: #fff;background: red;" id="make-tit" class="{{ prod['id'] }}">Зробити першою</button>
+                <button data="{{ img[1] }}" style="color: #fff;background: green;" id="make-sec" class="{{ prod['id'] }}">Зробити другою</button>
+            </div>
+        {% endfor %}
+    </div>
+
+
+    {% import 'edit_prod.html' as forms %}
+
+    {{ forms.form(categ=categories, brand=brands, title='', ptext="Якщо кількість фотографії менше 4, тоді вона буде додана", ctxt="Замінити на існуючу категорію", btxt="Замінити на існуючий бренд", btn="change-prod", btntxt="Внести зміни", m=prod['Модель'], k = prod['Колір'], p=prod['Ціна2'], s=size, much=prod['Кількість'], area=prod['Опис'], br=prod['Бренд'], ct=prod['Категорія']) }}
+
+    <span class="here-id" style="display: none;">{{ prod['id'] }}</span>
+
+
+
+
+    <script>
+        const url = window.location.pathname.replace('/product', '') + '/change';
+
+
+        setBtnEvent('#del', 'del_img', 'PUT')
+
+        setBtnEvent('#make-tit', 'set_first', 'PUT')
+
+        setBtnEvent('#make-sec', 'set_sec', 'PUT')
+
+        
+
+        function setBtnEvent($selector, func, method) {
+            document.querySelectorAll($selector).forEach(elem => {
+                elem.onclick = e => {
+                    const info = getImgInfo(e.target, func);
+    
+                    return sendData(url, info, method)
+                }
+            })
+        }
+
+        const getImgInfo = (eventElem, method) => {
+            const btn = eventElem;
+            const imgPath = btn.getAttribute('data');
+
+            let spImg = imgPath.split('/');
+            imgPath.replace(spImg[spImg.length -1], '')
+
+            return {
+                'method' : method,
+                'path_img' : imgPath.replace(spImg[spImg.length -1], ''),
+                'img_name' : spImg[spImg.length - 1]
+            }
+        }
+
+
+        const sendData = (path, body, method) => {
+            fetch(path, {
+                'method' : method,
+                'body' : JSON.stringify(body)
+            })
+            .catch(error => {
+                throw new Error
+            })
+            .then(data => data.json())
+            .then(data => {
+                console.log(data)
+                if (data.code === 200) {
+                    location.reload()
+                } else {
+                    console.log(data)
+                }
+            })
+        }
+        
+
+    </script>
+     
+    
+     <script src="/static/adminjs/add_products_section.js"></script>
+
+</body>
+</html>
